@@ -10,7 +10,7 @@
   },
   "author": "ToastedToast <hey@toasted.dev>",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "turbo": "^2.0.9"
   },
   "packageManager": "bun@1.1.20"
