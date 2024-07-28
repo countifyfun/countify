@@ -4,15 +4,20 @@
   "type": "module",
   "scripts": {
     "dev": "BUN_CONFIG_NO_CLEAR_TERMINAL_ON_RELOAD=1 bun with-env bun --watch src/index.ts",
+    "db:push": "bun with-env drizzle-kit push",
     "with-env": "dotenv -e ../.env --"
   },
   "dependencies": {
     "@hono/trpc-server": "^0.3.2",
     "@trpc/server": "^10.45.2",
-    "hono": "^4.5.2"
+    "drizzle-orm": "^0.32.1",
+    "hono": "^4.5.2",
+    "postgres": "^3.4.4"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/pg": "^8.11.6",
+    "drizzle-kit": "^0.23.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
