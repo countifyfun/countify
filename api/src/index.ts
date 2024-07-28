@@ -12,6 +12,12 @@ app.get("/", (c) => {
 
 app.use(
   "/trpc/*",
+  async (c, next) => {
+    if (c.req.header("authorization") !== process.env.AUTH_TOKEN) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+    return next();
+  },
   trpcServer({
     router: appRouter,
   }),

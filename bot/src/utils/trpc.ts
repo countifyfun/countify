@@ -5,6 +5,9 @@ export const api = createTRPCProxyClient<AppRouter>({
   links: [
     httpBatchLink({
       url: "http://localhost:3001/trpc",
+      headers: {
+        Authorization: process.env.AUTH_TOKEN!,
+      },
     }),
   ],
 });
