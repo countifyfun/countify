@@ -1,0 +1,17 @@
+{
+  "name": "@coutntify/root",
+  "version": "3.0.0",
+  "workspaces": [
+    "bot"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build"
+  },
+  "author": "ToastedToast <hey@toasted.dev>",
+  "license": "MIT",
+  "dependencies": {
+    "turbo": "^2.0.9"
+  },
+  "packageManager": "bun@1.1.20"
+}

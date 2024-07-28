@@ -1,0 +1,19 @@
+{
+  "name": "@countify/bot",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "BUN_CONFIG_NO_CLEAR_TERMINAL_ON_RELOAD=1 bun with-env bun --watch src/index.ts",
+    "with-env": "dotenv -e ../.env --"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "dotenv-cli": "^7.4.2"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
