@@ -1,5 +1,5 @@
 {
-  "name": "@countify/bot",
+  "name": "@countify/api",
   "module": "src/index.ts",
   "type": "module",
   "scripts": {
@@ -7,9 +7,9 @@
     "with-env": "dotenv -e ../.env --"
   },
   "dependencies": {
-    "@trpc/client": "^10.45.2",
-    "discord.js": "^14.15.3",
-    "dotenv-cli": "^7.4.2"
+    "@hono/trpc-server": "^0.3.2",
+    "@trpc/server": "^10.45.2",
+    "hono": "^4.5.2"
   },
   "devDependencies": {
     "@types/bun": "latest"
