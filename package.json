@@ -1,5 +1,5 @@
 {
-  "name": "@coutntify/root",
+  "name": "@countify/root",
   "version": "3.0.0",
   "workspaces": [
     "bot"
