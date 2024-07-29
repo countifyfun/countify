@@ -1,3 +1,4 @@
+import type { Interaction } from "../structures/command";
 import { Event } from "../structures/event";
 
 export default new Event({
@@ -9,7 +10,7 @@ export default new Event({
 
       const command = client.commands.get(interaction.commandName);
       if (!command) return;
-      command.run({ client, interaction });
+      command.run({ client, interaction: interaction as Interaction });
     }
   },
 });
