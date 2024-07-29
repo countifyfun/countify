@@ -3,7 +3,8 @@
   "version": "3.0.0",
   "workspaces": [
     "api",
-    "bot"
+    "bot",
+    "packages/*"
   ],
   "scripts": {
     "dev": "turbo run dev",

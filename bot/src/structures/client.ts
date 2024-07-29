@@ -7,6 +7,7 @@ import { botOptions } from "../utils/client-options";
 import { readdir } from "fs/promises";
 import { join } from "path";
 import type { Command } from "./command";
+import { botEnv } from "@countify/env/bot";
 
 export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
   commands = new Collection<string, Command>();
@@ -16,7 +17,7 @@ export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
   }
 
   connect() {
-    this.login(process.env.DISCORD_TOKEN);
+    this.login(botEnv.DISCORD_TOKEN);
   }
 
   register() {
@@ -31,11 +32,11 @@ export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
     const directories = await readdir(join(process.cwd(), "src/commands"));
     for (const directory of directories) {
       const commandFiles = await readdir(
-        join(process.cwd(), "src/commands", directory),
+        join(process.cwd(), "src/commands", directory)
       );
       for (const file of commandFiles) {
         const command = await import(`../commands/${directory}/${file}`).then(
-          (x) => x.default,
+          (x) => x.default
         );
         this.commands.set(command.data.toJSON().name, command);
         commands.push(command.data.toJSON());
@@ -60,7 +61,7 @@ export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
     const featureFiles = await readdir(join(process.cwd(), "src/features"));
     for (const file of featureFiles) {
       const feature = await import(`../features/${file}`).then(
-        (x) => x.default,
+        (x) => x.default
       );
       feature(this);
     }
