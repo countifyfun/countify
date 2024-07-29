@@ -50,16 +50,13 @@ export const channelsRouter = router({
           message: "Channel already exists",
         });
 
-      const createdChannels = await ctx.db
-        .insert(channels)
-        .values({
-          id: input.channelId,
-          guildId: input.guildId,
-          name: input.name,
-          count: 0,
-        })
-        .returning();
-      return createdChannels[0];
+      await ctx.db.insert(channels).values({
+        id: input.channelId,
+        guildId: input.guildId,
+        name: input.name,
+        count: 0,
+      });
+      return { success: true };
     }),
   setCount: procedure
     .input(

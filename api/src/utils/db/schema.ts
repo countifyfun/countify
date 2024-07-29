@@ -1,14 +1,14 @@
-import { integer, pgTable, text } from "drizzle-orm/pg-core";
+import { int, mysqlTable, text, varchar } from "drizzle-orm/mysql-core";
 
-export const guilds = pgTable("guilds", {
-  id: text("id").primaryKey(),
+export const guilds = mysqlTable("guilds", {
+  id: varchar("id", { length: 255 }).primaryKey(),
   name: text("name"),
 });
 
-export const channels = pgTable("channels", {
-  id: text("id").primaryKey(),
+export const channels = mysqlTable("channels", {
+  id: varchar("id", { length: 255 }).primaryKey(),
   name: text("name"),
-  guildId: text("guild_id").references(() => guilds.id),
-  count: integer("count").default(0),
+  guildId: varchar("guild_id", { length: 255 }).references(() => guilds.id),
+  count: int("count").default(0),
   lastUserId: text("last_user_id"),
 });

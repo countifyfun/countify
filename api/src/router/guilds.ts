@@ -6,13 +6,10 @@ export const guildsRouter = router({
   createGuild: procedure
     .input(z.object({ id: z.string(), name: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const createdGuilds = await ctx.db
-        .insert(guilds)
-        .values({
-          id: input.id,
-          name: input.name,
-        })
-        .returning();
-      return createdGuilds[0];
+      await ctx.db.insert(guilds).values({
+        id: input.id,
+        name: input.name,
+      });
+      return { success: true };
     }),
 });

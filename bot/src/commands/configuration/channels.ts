@@ -52,10 +52,14 @@ export default {
               return interaction.followUp(
                 `Added ${channel} as a counting channel.`,
               );
-            } else {
-              return interaction.followUp(err.message);
+            } else if (err.message === "Channel already exists") {
+              return interaction.followUp(
+                `${channel} has already been added as a counting channel.`,
+              );
             }
           }
+
+          console.error(err);
         }
       }
     }
