@@ -18,7 +18,7 @@ export default (client: BotClient) => {
         guildId: message.guild.id,
       });
       const currentChannel = channels.find(
-        (channel) => channel.id === message.channel.id,
+        (channel) => channel.id === message.channel.id
       );
       if (!channels.length || !currentChannel) return;
 
@@ -30,16 +30,18 @@ export default (client: BotClient) => {
       const nextCount = (currentChannel.count ?? 0) + 1;
       if (nextCount !== messageNumber) return message.delete();
 
-      await api.channels.setCount.mutate({
-        channelId: currentChannel.id,
-        guildId: message.guild.id,
-        count: nextCount,
-      });
-      await api.channels.updateLastUser.mutate({
-        channelId: currentChannel.id,
-        guildId: message.guild.id,
-        userId: message.author.id,
-      });
+      await Promise.all([
+        api.channels.setCount.mutate({
+          channelId: currentChannel.id,
+          guildId: message.guild.id,
+          count: nextCount,
+        }),
+        api.channels.updateLastUser.mutate({
+          channelId: currentChannel.id,
+          guildId: message.guild.id,
+          userId: message.author.id,
+        }),
+      ]);
     } catch (err) {
       if (err instanceof TRPCClientError && err.message === "Guild not found")
         return;
