@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
     "db:push": "cd api && bun db:push",
     "db:studio": "cd api && bun db:studio"
   },
