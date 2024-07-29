@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "BUN_CONFIG_NO_CLEAR_TERMINAL_ON_RELOAD=1 bun with-env bun --watch src/index.ts",
     "db:push": "bun with-env drizzle-kit push",
+    "db:studio": "bun with-env drizzle-kit studio",
     "with-env": "dotenv -e ../.env --"
   },
   "dependencies": {
@@ -12,7 +13,8 @@
     "@trpc/server": "^10.45.2",
     "drizzle-orm": "^0.32.1",
     "hono": "^4.5.2",
-    "postgres": "^3.4.4"
+    "postgres": "^3.4.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/bun": "latest",
