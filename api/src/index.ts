@@ -24,7 +24,7 @@ app.use(
   trpcServer({
     router: appRouter,
     createContext,
-  })
+  }),
 );
 
 Bun.serve({

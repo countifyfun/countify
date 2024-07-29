@@ -5,13 +5,13 @@ import type {
 } from "discord.js";
 import type { BotClient } from "./client";
 
-export interface Interaction extends ChatInputCommandInteraction<"cached"> { }
+export interface Interaction extends ChatInputCommandInteraction<"cached"> {}
 
 export interface Command {
   data:
-  | SlashCommandBuilder
-  | SlashCommandSubcommandsOnlyBuilder
-  | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+    | SlashCommandBuilder
+    | SlashCommandSubcommandsOnlyBuilder
+    | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
   run: ({
     client,
     interaction,

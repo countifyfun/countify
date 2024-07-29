@@ -24,6 +24,5 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
 
-      # TODO: add a linter
-      # - name: Lint
-      #   run: bun run lint
+      - name: Lint
+        run: bun run lint

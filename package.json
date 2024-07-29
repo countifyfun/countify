@@ -11,12 +11,18 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "db:push": "cd api && bun db:push",
-    "db:studio": "cd api && bun db:studio"
+    "db:studio": "cd api && bun db:studio",
+    "lint": "eslint ."
   },
   "author": "ToastedToast <hey@toasted.dev>",
   "license": "MIT",
   "devDependencies": {
-    "turbo": "^2.0.9"
+    "@eslint/js": "^9.8.0",
+    "@types/eslint__js": "^8.42.3",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "turbo": "^2.0.9",
+    "typescript-eslint": "^7.17.0"
   },
   "packageManager": "bun@1.1.20"
 }
