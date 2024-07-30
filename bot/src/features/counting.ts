@@ -18,7 +18,7 @@ export default (client: BotClient) => {
         guildId: message.guild.id,
       });
       const currentChannel = channels.find(
-        (channel) => channel.id === message.channel.id,
+        (channel) => channel.id === message.channel.id
       );
       if (!channels.length || !currentChannel) return;
 

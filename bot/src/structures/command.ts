@@ -1,6 +1,7 @@
 import type {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
+  SlashCommandOptionsOnlyBuilder,
   SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import type { BotClient } from "./client";
@@ -11,7 +12,7 @@ export interface Command {
   data:
     | SlashCommandBuilder
     | SlashCommandSubcommandsOnlyBuilder
-    | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+    | SlashCommandOptionsOnlyBuilder;
   run: ({
     client,
     interaction,

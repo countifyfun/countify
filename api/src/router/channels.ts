@@ -22,13 +22,23 @@ export const channelsRouter = router({
         where: eq(channels.guildId, input.guildId),
       });
     }),
+  getChannel: procedure
+    .input(z.object({ guildId: z.string(), channelId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.query.channels.findFirst({
+        where: and(
+          eq(channels.guildId, input.guildId),
+          eq(channels.id, input.channelId)
+        ),
+      });
+    }),
   addChannel: procedure
     .input(
       z.object({
         channelId: z.string(),
         guildId: z.string(),
         name: z.string(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       if (
@@ -64,7 +74,7 @@ export const channelsRouter = router({
         guildId: z.string(),
         channelId: z.string(),
         count: z.number(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       await ctx.db
@@ -73,8 +83,8 @@ export const channelsRouter = router({
         .where(
           and(
             (eq(channels.id, input.channelId),
-            eq(channels.guildId, input.guildId)),
-          ),
+            eq(channels.guildId, input.guildId))
+          )
         );
       return { success: true };
     }),
@@ -84,7 +94,7 @@ export const channelsRouter = router({
         channelId: z.string(),
         guildId: z.string(),
         userId: z.string(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       await ctx.db
@@ -93,8 +103,8 @@ export const channelsRouter = router({
         .where(
           and(
             (eq(channels.id, input.channelId),
-            eq(channels.guildId, input.guildId)),
-          ),
+            eq(channels.guildId, input.guildId))
+          )
         );
       return { success: true };
     }),
