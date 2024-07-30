@@ -4,6 +4,7 @@ import { trpcServer } from "@hono/trpc-server";
 import { Hono } from "hono";
 import { appRouter } from "./router";
 import { createContext } from "./utils/trpc";
+import { restRouter } from "./rest";
 
 const app = new Hono();
 
@@ -12,6 +13,8 @@ app.get("/", (c) => {
     message: "Hello World",
   });
 });
+
+app.route("/", restRouter);
 
 app.use(
   "/trpc/*",
@@ -24,7 +27,8 @@ app.use(
   trpcServer({
     router: appRouter,
     createContext,
-  }),
+    // eslint-disable-next-line prettier/prettier
+  })
 );
 
 Bun.serve({
