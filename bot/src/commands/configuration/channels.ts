@@ -16,8 +16,8 @@ export default {
             .setName("channel")
             .setDescription("The channel to add.")
             .addChannelTypes(ChannelType.GuildText)
-            .setRequired(true),
-        ),
+            .setRequired(true)
+        )
     ),
   run: async ({ interaction }) => {
     await interaction.deferReply({
@@ -35,7 +35,7 @@ export default {
             guildId: interaction.guild.id,
           });
           return interaction.followUp(
-            `Added ${channel} as a counting channel.`,
+            `Added ${channel} as a counting channel.`
           );
         } catch (err) {
           if (err instanceof TRPCClientError) {
@@ -43,6 +43,7 @@ export default {
               await api.guilds.createGuild.mutate({
                 id: interaction.guild.id,
                 name: interaction.guild.name,
+                iconUrl: interaction.guild.iconURL(),
               });
               await api.channels.addChannel.mutate({
                 channelId: channel.id,
@@ -50,11 +51,11 @@ export default {
                 guildId: interaction.guild.id,
               });
               return interaction.followUp(
-                `Added ${channel} as a counting channel.`,
+                `Added ${channel} as a counting channel.`
               );
             } else if (err.message === "Channel already exists") {
               return interaction.followUp(
-                `${channel} has already been added as a counting channel.`,
+                `${channel} has already been added as a counting channel.`
               );
             }
           }

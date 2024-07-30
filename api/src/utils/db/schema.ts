@@ -3,7 +3,8 @@ import { int, mysqlTable, text, varchar } from "drizzle-orm/mysql-core";
 
 export const guilds = mysqlTable("guilds", {
   id: varchar("id", { length: 255 }).primaryKey(),
-  name: text("name"),
+  name: text("name").notNull(),
+  iconUrl: text("icon_url"),
 });
 
 export const guildRelations = relations(guilds, ({ many }) => ({
@@ -12,9 +13,9 @@ export const guildRelations = relations(guilds, ({ many }) => ({
 
 export const channels = mysqlTable("channels", {
   id: varchar("id", { length: 255 }).primaryKey(),
-  name: text("name"),
-  guildId: varchar("guild_id", { length: 255 }),
-  count: int("count").default(0),
+  name: text("name").notNull(),
+  guildId: varchar("guild_id", { length: 255 }).notNull(),
+  count: int("count").notNull().default(0),
   lastUserId: text("last_user_id"),
 });
 
