@@ -1,9 +1,8 @@
-import { procedure, router } from "../utils/trpc";
+import { router } from "../utils/trpc";
 import { channelsRouter } from "./channels";
 import { guildsRouter } from "./guilds";
 
 export const appRouter = router({
-  greeting: procedure.query(() => "Hello from tRPC v10!"),
   channels: channelsRouter,
   guilds: guildsRouter,
 });
