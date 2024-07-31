@@ -38,6 +38,7 @@ export const channelsRouter = router({
         channelId: z.string(),
         guildId: z.string(),
         name: z.string(),
+        count: z.number().default(0),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -64,7 +65,7 @@ export const channelsRouter = router({
         id: input.channelId,
         guildId: input.guildId,
         name: input.name,
-        count: 0,
+        count: input.count,
       });
       return { success: true };
     }),

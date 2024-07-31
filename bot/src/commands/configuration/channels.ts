@@ -22,6 +22,12 @@ export default {
             .addChannelTypes(ChannelType.GuildText)
             .setRequired(true)
         )
+        .addNumberOption((option) =>
+          option
+            .setName("count")
+            .setDescription("The count of the channel.")
+            .setRequired(false)
+        )
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
   run: async ({ interaction }) => {
@@ -33,10 +39,12 @@ export default {
     switch (subcommand) {
       case "add": {
         const channel = interaction.options.getChannel("channel", true);
+        const count = interaction.options.getNumber("count") ?? 0;
         try {
           await api.channels.addChannel.mutate({
             channelId: channel.id,
             name: channel.name,
+            count,
             guildId: interaction.guild.id,
           });
           return interaction.followUp(
@@ -53,6 +61,7 @@ export default {
               await api.channels.addChannel.mutate({
                 channelId: channel.id,
                 name: channel.name,
+                count,
                 guildId: interaction.guild.id,
               });
               return interaction.followUp(
