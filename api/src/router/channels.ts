@@ -69,6 +69,37 @@ export const channelsRouter = router({
       });
       return { success: true };
     }),
+  removeChannel: procedure
+    .input(
+      z.object({
+        guildId: z.string(),
+        channelId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (
+        !(await ctx.db.query.channels.findFirst({
+          where: and(
+            eq(channels.id, input.channelId),
+            eq(channels.guildId, input.guildId)
+          ),
+        }))
+      )
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Channel not found",
+        });
+
+      await ctx.db
+        .delete(channels)
+        .where(
+          and(
+            (eq(channels.id, input.channelId),
+            eq(channels.guildId, input.guildId))
+          )
+        );
+      return { success: true };
+    }),
   setCount: procedure
     .input(
       z.object({
