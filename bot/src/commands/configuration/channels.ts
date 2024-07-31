@@ -1,4 +1,8 @@
-import { ChannelType, SlashCommandBuilder } from "discord.js";
+import {
+  ChannelType,
+  PermissionFlagsBits,
+  SlashCommandBuilder,
+} from "discord.js";
 import type { Command } from "../../structures/command";
 import { api } from "../../utils/trpc";
 import { TRPCClientError } from "@trpc/client";
@@ -18,7 +22,8 @@ export default {
             .addChannelTypes(ChannelType.GuildText)
             .setRequired(true)
         )
-    ),
+    )
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
   run: async ({ interaction }) => {
     await interaction.deferReply({
       ephemeral: true,
