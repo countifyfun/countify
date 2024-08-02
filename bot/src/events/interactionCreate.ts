@@ -1,5 +1,6 @@
 import type { Command, Interaction } from "../structures/command";
 import { Event } from "../structures/event";
+import { importDefault } from "../utils/import";
 
 export default new Event({
   name: "interactionCreate",
@@ -14,11 +15,12 @@ export default new Event({
         interaction.options.getSubcommand(false),
       ].filter((x): x is string => !!x);
 
-      const command = (await import(
+      const command = await importDefault<Command>(
         `../commands/${commandSegments.join("/")}`
-      ).then((x) => x.default)) as Command;
+      );
+      if (!command) return;
 
-      return await command.run({
+      return command.run({
         client,
         interaction: interaction as Interaction,
       });

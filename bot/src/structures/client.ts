@@ -10,6 +10,7 @@ import { readdir } from "fs/promises";
 import { join } from "path";
 import type { Command, SubcommandMeta } from "./command";
 import { botEnv } from "@countify/env/bot";
+import { importDefault } from "../utils/import";
 
 export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
   constructor() {
@@ -32,9 +33,8 @@ export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
     const files = await readdir(join(process.cwd(), "src/commands"));
     for (const fileName of files.filter((file) => !file.startsWith("_"))) {
       if (fileName.includes(".")) {
-        const command = (await import(`../commands/${fileName}`).then(
-          (x) => x.default
-        )) as Command;
+        const command = await importDefault<Command>(`../commands/${fileName}`);
+        if (!command) continue;
         const name = fileName.split(".")[0]!;
         commands.push({
           name,
@@ -45,9 +45,9 @@ export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
           }),
         });
       } else {
-        const metaFile = (await import(`../commands/${fileName}/_meta.ts`)
-          .then((x) => x.default)
-          .catch(() => null)) as SubcommandMeta | null;
+        const metaFile = await importDefault<SubcommandMeta>(
+          `../commands/${fileName}/_meta.ts`
+        );
         const subCommands = await (async function nestSubCommands(
           relativeSubPath: string,
           client: BotClient
