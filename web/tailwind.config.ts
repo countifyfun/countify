@@ -76,7 +76,7 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("tailwindcss-3d")],
   presets: [createPreset()],
 } satisfies Config;
 
