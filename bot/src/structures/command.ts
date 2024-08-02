@@ -1,18 +1,16 @@
 import type {
+  ApplicationCommandOptionData,
   ChatInputCommandInteraction,
-  SlashCommandBuilder,
-  SlashCommandOptionsOnlyBuilder,
-  SlashCommandSubcommandsOnlyBuilder,
+  PermissionResolvable,
 } from "discord.js";
 import type { BotClient } from "./client";
 
 export interface Interaction extends ChatInputCommandInteraction<"cached"> {}
 
 export interface Command {
-  data:
-    | SlashCommandBuilder
-    | SlashCommandSubcommandsOnlyBuilder
-    | SlashCommandOptionsOnlyBuilder;
+  description: string;
+  options?: [ApplicationCommandOptionData, ...ApplicationCommandOptionData[]];
+  permissions?: [PermissionResolvable, ...PermissionResolvable[]];
   run: ({
     client,
     interaction,
@@ -20,4 +18,9 @@ export interface Command {
     client: BotClient<true>;
     interaction: Interaction;
   }) => void;
+}
+
+export interface SubcommandMeta {
+  description: string;
+  permissions?: [PermissionResolvable, ...PermissionResolvable[]];
 }

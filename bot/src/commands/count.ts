@@ -1,18 +1,22 @@
-import { ChannelType, EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import type { Command } from "../../structures/command";
-import { api } from "../../utils/trpc";
+import {
+  ApplicationCommandOptionType,
+  ChannelType,
+  EmbedBuilder,
+} from "discord.js";
+import type { Command } from "../structures/command";
+import { api } from "../utils/trpc";
 
 export default {
-  data: new SlashCommandBuilder()
-    .setName("count")
-    .setDescription("Get the count of a counting channel")
-    .addChannelOption((option) =>
-      option
-        .setName("channel")
-        .setDescription("The channel to get the count from")
-        .addChannelTypes(ChannelType.GuildText)
-        .setRequired(false)
-    ),
+  description: "Get the count of a counting channel",
+  options: [
+    {
+      type: ApplicationCommandOptionType.Channel,
+      name: "channel",
+      description: "The channel to get the count from",
+      channelTypes: [ChannelType.GuildText],
+      required: false,
+    },
+  ],
   run: async ({ interaction }) => {
     await interaction.deferReply({ ephemeral: true });
 

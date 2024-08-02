@@ -1,8 +1,8 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import type { Command } from "../../structures/command";
+import { EmbedBuilder } from "discord.js";
+import type { Command } from "../structures/command";
 
 export default {
-  data: new SlashCommandBuilder().setName("ping").setDescription("Ping!"),
+  description: "Ping the bot",
   run: async ({ client, interaction }) => {
     const res = await interaction.deferReply({
       fetchReply: true,

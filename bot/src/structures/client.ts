@@ -1,17 +1,17 @@
 import {
+  ApplicationCommandOptionType,
   Client,
-  Collection,
   type ApplicationCommandDataResolvable,
+  type ApplicationCommandSubCommandData,
+  type ApplicationCommandSubGroupData,
 } from "discord.js";
 import { botOptions } from "../utils/client-options";
 import { readdir } from "fs/promises";
 import { join } from "path";
-import type { Command } from "./command";
+import type { Command, SubcommandMeta } from "./command";
 import { botEnv } from "@countify/env/bot";
 
 export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
-  commands = new Collection<string, Command>();
-
   constructor() {
     super(botOptions);
   }
@@ -29,17 +29,75 @@ export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
   private async _registerCommands() {
     const commands: ApplicationCommandDataResolvable[] = [];
 
-    const directories = await readdir(join(process.cwd(), "src/commands"));
-    for (const directory of directories) {
-      const commandFiles = await readdir(
-        join(process.cwd(), "src/commands", directory)
-      );
-      for (const file of commandFiles) {
-        const command = await import(`../commands/${directory}/${file}`).then(
+    const files = await readdir(join(process.cwd(), "src/commands"));
+    for (const fileName of files.filter((file) => !file.startsWith("_"))) {
+      if (fileName.includes(".")) {
+        const command = (await import(`../commands/${fileName}`).then(
           (x) => x.default
-        );
-        this.commands.set(command.data.toJSON().name, command);
-        commands.push(command.data.toJSON());
+        )) as Command;
+        const name = fileName.split(".")[0]!;
+        commands.push({
+          name,
+          description: command.description,
+          ...(command.options && { options: command.options }),
+          ...(command.permissions && {
+            defaultMemberPermissions: command.permissions,
+          }),
+        });
+      } else {
+        const metaFile = (await import(`../commands/${fileName}/_meta.ts`)
+          .then((x) => x.default)
+          .catch(() => null)) as SubcommandMeta | null;
+        const subCommands = await (async function nestSubCommands(
+          relativeSubPath: string,
+          client: BotClient
+        ) {
+          const subFiles = await readdir(
+            join(process.cwd(), "src/commands", fileName)
+          );
+          const subCommands: (
+            | ApplicationCommandSubCommandData
+            | ApplicationCommandSubGroupData
+          )[] = [];
+          for (const subFileName of subFiles.filter(
+            (file) => !file.startsWith("_")
+          )) {
+            if (subFileName.includes(".")) {
+              const subCommand = await import(
+                `../commands/${fileName}/${subFileName}`
+              ).then((x) => x.default);
+              const name = subFileName.split(".")[0]!;
+              subCommands.push({
+                type: ApplicationCommandOptionType.Subcommand,
+                name,
+                description: subCommand.description,
+                ...(subCommand.options && { options: subCommand.options }),
+              });
+            } else {
+              const subSubCommands = await nestSubCommands(
+                `${relativeSubPath}/${subFileName}`,
+                client
+              );
+              subCommands.push({
+                type: ApplicationCommandOptionType.SubcommandGroup,
+                name: subFileName,
+                description: "Subcommands",
+                options: subSubCommands as never,
+              });
+            }
+          }
+          return subCommands;
+        })(`src/commands/${fileName}`, this);
+        if (subCommands.length) {
+          commands.push({
+            name: fileName,
+            description: metaFile?.description ?? "Subcommand",
+            options: subCommands,
+            ...(metaFile?.permissions && {
+              defaultMemberPermissions: metaFile.permissions,
+            }),
+          });
+        }
       }
     }
 
