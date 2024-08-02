@@ -4,6 +4,7 @@
   "workspaces": [
     "api",
     "bot",
+    "web",
     "packages/*"
   ],
   "scripts": {
