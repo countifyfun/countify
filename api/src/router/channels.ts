@@ -78,6 +78,15 @@ export const channelsRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       if (
+        !(await ctx.db.query.guilds.findFirst({
+          where: eq(guilds.id, input.guildId),
+        }))
+      )
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Guild not found",
+        });
+      if (
         !(await ctx.db.query.channels.findFirst({
           where: and(
             eq(channels.id, input.channelId),

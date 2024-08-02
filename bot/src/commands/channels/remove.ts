@@ -30,7 +30,7 @@ export default {
       );
     } catch (err) {
       if (err instanceof TRPCClientError) {
-        if (err.message === "Channel not found") {
+        if (err.message.includes("not found")) {
           return interaction.followUp(
             `${channel} has not been added as a counting channel.`
           );
