@@ -44,6 +44,7 @@ export default {
           )
           .setColor("Yellow"),
       ],
+      ephemeral: true,
     });
   },
 } satisfies Command;
