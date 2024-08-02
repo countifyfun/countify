@@ -32,17 +32,19 @@ export default {
     } catch (err) {
       if (err instanceof TRPCClientError) {
         if (err.message === "Guild not found") {
-          await api.guilds.createGuild.mutate({
-            id: interaction.guild.id,
-            name: interaction.guild.name,
-            iconUrl: interaction.guild.iconURL(),
-          });
-          await api.channels.addChannel.mutate({
-            channelId: channel.id,
-            name: channel.name,
-            count,
-            guildId: interaction.guild.id,
-          });
+          await Promise.all([
+            api.guilds.createGuild.mutate({
+              id: interaction.guild.id,
+              name: interaction.guild.name,
+              iconUrl: interaction.guild.iconURL(),
+            }),
+            api.channels.addChannel.mutate({
+              channelId: channel.id,
+              name: channel.name,
+              count,
+              guildId: interaction.guild.id,
+            }),
+          ]);
           return interaction.followUp(
             `Added ${channel} as a counting channel.`
           );
