@@ -13,6 +13,12 @@ export default {
       channelTypes: [ChannelType.GuildText],
       required: true,
     },
+    {
+      type: ApplicationCommandOptionType.Number,
+      name: "count",
+      description: "The initial count for the channel",
+      required: false,
+    },
   ],
   run: async ({ interaction }) => {
     await interaction.deferReply({
