@@ -1,10 +1,9 @@
+import type { BotClient } from "../structures/client";
 import type { Command, Interaction } from "../structures/command";
-import { Event } from "../structures/event";
 import { importDefault } from "../utils/import";
 
-export default new Event({
-  name: "interactionCreate",
-  run: async (client, interaction) => {
+export default (client: BotClient<true>) => {
+  client.on("interactionCreate", async (interaction) => {
     if (interaction.isChatInputCommand()) {
       if (!interaction.inGuild())
         return interaction.reply("This command can only be used in servers!");
@@ -25,5 +24,5 @@ export default new Event({
         interaction: interaction as Interaction,
       });
     }
-  },
-});
+  });
+};

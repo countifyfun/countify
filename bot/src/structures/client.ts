@@ -23,8 +23,7 @@ export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
 
   register() {
     this._registerCommands();
-    this._registerEvents();
-    this._registerFeatures();
+    this._registerHandlers();
   }
 
   private async _registerCommands() {
@@ -107,18 +106,10 @@ export class BotClient<Ready extends boolean = boolean> extends Client<Ready> {
     });
   }
 
-  private async _registerEvents() {
-    const eventFiles = await readdir(join(process.cwd(), "src/events"));
-    for (const file of eventFiles) {
-      const event = await import(`../events/${file}`).then((x) => x.default);
-      this.on(event.name, event.run.bind(null, this));
-    }
-  }
-
-  private async _registerFeatures() {
-    const featureFiles = await readdir(join(process.cwd(), "src/features"));
+  private async _registerHandlers() {
+    const featureFiles = await readdir(join(process.cwd(), "src/handlers"));
     for (const file of featureFiles) {
-      const feature = await import(`../features/${file}`).then(
+      const feature = await import(`../handlers/${file}`).then(
         (x) => x.default
       );
       feature(this);
