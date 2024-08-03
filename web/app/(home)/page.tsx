@@ -41,13 +41,13 @@ export default async function Landing() {
           </div>
         </div>
         <div className="flex grow flex-col items-center justify-center text-center perspective-250">
-          <div className="relative flex w-64 flex-col gap-3 rounded-lg bg-neutral-900 px-4 py-3 transform-style-3d rotate-x-3 md:-rotate-y-3 lg:w-72 xl:w-80">
+          <div className="relative flex w-64 flex-col gap-3 rounded-lg bg-neutral-100 px-4 py-3 transform-style-3d rotate-x-3 dark:bg-neutral-900 md:-rotate-y-3 lg:w-72 xl:w-80">
             <div className="flex items-center gap-2">
               <p className="text-3xl font-semibold">#</p>
               <p className="text-lg">counting</p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-400 text-center text-xl font-bold">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-400 text-center text-xl font-bold text-white">
                 T
               </div>
               <div className="text-left">
@@ -56,7 +56,7 @@ export default async function Landing() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-fuchsia-500 text-center text-xl font-bold">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-fuchsia-500 text-center text-xl font-bold text-white">
                 M
               </div>
               <div className="text-left">
@@ -65,7 +65,7 @@ export default async function Landing() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-400 text-center text-xl font-bold">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-400 text-center text-xl font-bold text-white">
                 T
               </div>
               <div className="text-left">
@@ -74,7 +74,7 @@ export default async function Landing() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-fuchsia-500 text-center text-xl font-bold">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-fuchsia-500 text-center text-xl font-bold text-white">
                 M
               </div>
               <div className="text-left">
@@ -83,7 +83,7 @@ export default async function Landing() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-700 text-center text-xl font-bold">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-700 text-center text-xl font-bold text-white">
                 G
               </div>
               <div className="text-left">
