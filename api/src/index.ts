@@ -1,5 +1,4 @@
-import "@countify/env/api";
-
+import { apiEnv } from "@countify/env/api";
 import { trpcServer } from "@hono/trpc-server";
 import { Hono } from "hono";
 import { appRouter } from "./router";
@@ -19,7 +18,7 @@ app.route("/", restRouter);
 app.use(
   "/trpc/*",
   async (c, next) => {
-    if (c.req.header("authorization") !== process.env.AUTH_TOKEN) {
+    if (c.req.header("authorization") !== apiEnv.AUTH_TOKEN) {
       return c.json({ error: "Unauthorized" }, 401);
     }
     return next();
