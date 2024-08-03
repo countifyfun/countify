@@ -22,7 +22,7 @@ export default function Footer() {
               height={35}
               className="rounded-full"
             />
-            <h1 className="text-2xl font-bold tracking-tighter text-yellow-300">
+            <h1 className="text-2xl font-bold tracking-tighter text-primary">
               Countify
             </h1>
           </a>
@@ -30,14 +30,14 @@ export default function Footer() {
             © {new Date().getFullYear()}{" "}
             <a
               href="https://github.com/countifyfun"
-              className="text-yellow-300 underline decoration-from-font [text-underline-position:from-font]"
+              className="text-primary underline decoration-from-font [text-underline-position:from-font]"
             >
               Countify Labs
             </a>{" "}
             (a subdivision of{" "}
             <a
               href="https://youtube.com/@graphifystatistics"
-              className="text-yellow-300 underline decoration-from-font [text-underline-position:from-font]"
+              className="text-primary underline decoration-from-font [text-underline-position:from-font]"
             >
               Graphify Studios
             </a>
