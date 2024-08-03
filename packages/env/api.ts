@@ -3,11 +3,12 @@ import { z } from "zod";
 
 export const apiEnv = createEnv({
   server: {
-    DATABASE_HOST: z.string(),
-    DATABASE_PORT: z.coerce.number(),
-    DATABASE_USER: z.string(),
-    DATABASE_PASSWORD: z.string(),
-    DATABASE_NAME: z.string(),
+    DATABASE_HOST: z.string().optional(),
+    DATABASE_PORT: z.coerce.number().optional(),
+    DATABASE_USER: z.string().optional(),
+    DATABASE_PASSWORD: z.string().optional(),
+    DATABASE_NAME: z.string().optional(),
+    DATABASE_URL: z.string(),
     AUTH_TOKEN: z.string(),
   },
   clientPrefix: undefined,

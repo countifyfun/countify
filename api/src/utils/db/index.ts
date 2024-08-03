@@ -1,14 +1,8 @@
 import { apiEnv } from "@countify/env/api";
-import { drizzle } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "./schema";
 
-const poolConnection = mysql.createPool({
-  host: apiEnv.DATABASE_HOST,
-  port: apiEnv.DATABASE_PORT,
-  user: apiEnv.DATABASE_USER,
-  password: apiEnv.DATABASE_PASSWORD,
-  database: apiEnv.DATABASE_NAME,
-});
+const client = postgres(apiEnv.DATABASE_URL);
 
-export const db = drizzle(poolConnection, { mode: "default", schema });
+export const db = drizzle(client, { schema });
