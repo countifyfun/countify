@@ -5,5 +5,5 @@ declare module "*.svg";
 declare module "*.jpeg";
 declare module "*.jpg";
 declare module "@/.map.ts" {
-  export const map: string;
+  export const map: Record<string, unknown>;
 }
