@@ -5,6 +5,14 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  redirects: async () => [
+    {
+      source: "/invite",
+      destination:
+        "https://discord.com/api/oauth2/authorize?client_id=1190299944062570627&permissions=26640&scope=bot%20applications.commands",
+      permanent: false,
+    },
+  ],
   images: {
     remotePatterns: [
       {
