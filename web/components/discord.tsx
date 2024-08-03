@@ -30,6 +30,7 @@ const profiles: Record<
 
 export function Discord({ children }: { children: React.ReactNode }) {
   return (
+    // eslint-disable-next-line prettier/prettier
     <div className="no-prose font-discord flex flex-col bg-white py-2 dark:bg-[#36393e]">
       {children}
     </div>
