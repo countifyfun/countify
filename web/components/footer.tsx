@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <div className="border-t">
       <footer
-        className="mx-auto flex max-w-[90rem] justify-center px-6 py-12 text-gray-400 md:justify-start"
+        className="mx-auto flex max-w-[90rem] justify-center px-6 py-8 text-gray-400 md:justify-start"
         aria-labelledby="footer-heading"
       >
         <h2 id="footer-heading" className="sr-only">

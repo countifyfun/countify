@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 
 export default async function Landing() {
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-[90rem] flex-col p-6">
+    <div className="mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-[90rem] flex-col p-6">
       <div className="flex grow flex-col gap-4 md:flex-row">
         <div className="flex flex-col items-center justify-center gap-3 text-center md:items-start md:text-left">
           <div className="flex flex-col gap-2">
