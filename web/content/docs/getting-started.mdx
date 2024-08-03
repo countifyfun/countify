@@ -1,0 +1,99 @@
+---
+title: Getting Started
+description: In just a few simple steps, you'll have Countify in your Discord server, ready to track and keep your counting channel organized.
+---
+
+import { Step, Steps } from "fumadocs-ui/components/steps";
+
+In just a few simple steps, you'll have Countify in your Discord server, ready to track and keep your counting channel organized. Let's dive in!
+
+## Inviting Countify
+
+<Steps>
+
+<Step>
+
+### Start the flow
+
+Go to [countify.fun/invite](https://countify.fun/invite). It should redirect you to a page like this:
+
+![Invite Example](/docs/getting-started/invite-example.png)
+
+</Step>
+
+<Step>
+
+### Select your server
+
+Select your server in the "Add to server" dropdown. You can also type to find your server. Once you've selected the server you want to invite Countify in, click "Continue". You should then see a page like this:
+
+![Authorize Example](/docs/getting-started/authorize-example.png)
+
+</Step>
+
+<Step>
+
+### Verify your permissions
+
+Countify requests some basic permissions that are required to make most features work. But if you don't trust Countify with some permissions, you can deselect them by clicking on the permission. But if you don't know what to deselect, the defaults are fine.
+
+Keep in mind that Countify requires `Manage Messages` in order to delete the wrong count messages.
+
+Once you've verified Countify's permissions for your server, click "Authorize".
+
+</Step>
+
+<Step>
+
+### Done!
+
+You should then see a page like this:
+
+![Authorized Example](/docs/getting-started/authorized-example.png)
+
+This means that Countify is now in your server! If you check your member list, you should see that Countify is in the server.
+
+![Countify in the server](/docs/getting-started/countify-in-server.png)
+
+</Step>
+
+</Steps>
+
+## Setting up Countify
+
+<Steps>
+<Step>
+### Run the command
+
+To setup Countify in your server, run the `/setup` command in your server.
+
+If you already have a counting channel with an established history, you can specify the `channel` and `count` Option.
+
+</Step>
+
+<Step>
+
+### Done!
+
+After running the command, you should see a message from Countify that looks like this:
+
+import { Discord, Message, Mention } from "@/components/discord";
+
+<Discord>
+  <Message
+    profile="countify"
+    command={{ name: "channels add", profile: "toasted" }}
+    ephemeral
+  >
+    Added <Mention>#counting</Mention> as a counting channel.
+  </Message>
+</Discord>
+
+That means that Countify has been enabled in your server. Congratulations!
+
+</Step>
+</Steps>
+
+## Problems?
+
+If you encountered any problems while inviting or setting up Countify, make sure to [make an issue on GitHub](https://github.com/countifyfun/bot) or asking for help in [our Discord server](https://countify.fun/discord).

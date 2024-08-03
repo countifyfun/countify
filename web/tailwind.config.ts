@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import { createPreset } from "fumadocs-ui/tailwind-plugin";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 const config = {
   darkMode: ["class"],
@@ -20,6 +21,13 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        discord: [
+          "var(--font-whitney)",
+          "'Source Sans Pro'",
+          ...defaultTheme.fontFamily.sans,
+        ],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
