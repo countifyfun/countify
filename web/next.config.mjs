@@ -1,6 +1,5 @@
 import createMDX from "fumadocs-mdx/config";
-
-const withMDX = createMDX();
+import { remarkHeading } from "fumadocs-core/mdx-plugins";
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -30,5 +29,11 @@ const config = {
     ],
   },
 };
+
+const withMDX = createMDX({
+  mdxOptions: {
+    remarkPlugins: [remarkHeading],
+  },
+});
 
 export default withMDX(config);
