@@ -27,7 +27,6 @@ app.use(
   trpcServer({
     router: appRouter,
     createContext,
-    // eslint-disable-next-line prettier/prettier
   })
 );
 
