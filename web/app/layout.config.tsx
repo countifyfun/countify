@@ -12,8 +12,8 @@ export const baseOptions: HomeLayoutProps = {
         <Image
           src={logo}
           alt="Countify Logo"
-          width={20}
-          height={20}
+          width={24}
+          height={24}
           className="rounded-full"
         />
         <span className="font-medium max-md:[header_&]:hidden">Countify</span>
