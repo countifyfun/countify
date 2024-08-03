@@ -6,6 +6,7 @@ import Image from "next/image";
 
 // shared configuration
 export const baseOptions: HomeLayoutProps = {
+  githubUrl: "https://github.com/countifyfun/countify",
   nav: {
     title: (
       <>
