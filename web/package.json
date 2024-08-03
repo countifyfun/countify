@@ -20,7 +20,8 @@
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-3d": "^1.0.6",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/mdx": "^2.0.13",

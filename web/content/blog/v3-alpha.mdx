@@ -1,0 +1,39 @@
+---
+title: Countify 3.0 is now in alpha!
+description: The newest version of Countify, 3.0, is now publicly available in alpha.
+date: 2024-08-03
+authors:
+  - name: ToastedToast
+    avatar: https://avatars.githubusercontent.com/u/50563138?v=4
+    githubUsername: ToastedDev
+---
+
+After nearly 6 months of being dormant, Countify is back with version 3.0 which is now in alpha! 🎉
+
+This release brings a complete overhaul to the entirety of Countify, from its website, to its API, to the bot itself. So without any further introduction, let's get started!
+
+## Multiple channels are now supported
+
+In 3.0, we've decided to overhaul the setup system, now allowing for multiple counting channels to live in the same server.
+
+The setup is still as simple as before, just run `/channels add`, specify your channel and the initial count (if any), and you're good to go.
+
+But this new setup allows for you to add multiple channels, allowing your server members to count in multiple channels. This could be useful if you have a public counting channel and a members-only/private counting channel.
+
+## Complete rewrite
+
+With 3.0, we've decided to completely rewrite the bot from scratch. This is due to the complicated multi-repo (or "polyrepo") setup we had in 2.0, which made contributions from our team and the public hard to do.
+
+In this version, we've decided to make Countify a monorepo, allowing everything to be in one place and making contributions easier.
+
+This means that our old repositories will be archived and no longer maintained. For the new 3.0 repo, you can check out [countifyfun/countify](https://github.com/countifyfun/countify).
+
+## New website design
+
+Because we've made Countify 3.0 a monorepo, we decided to rebuild our website as well. Instead of having two websites, one for the marketing and dashboard and one for the documentation, we put them both in the same website.
+
+To build this new website, we decided to use [Next.js](https://nextjs.org) and [Fumadocs](https://fumadocs.vercel.app). We decided to use Fumadocs instead of Nextra or Docusaurus because it allows us to use the `app/` router in Next.js, and allows us to control more of our website than Nextra or Docusaurus.
+
+## Conclusion
+
+There's not much in this first alpha release, but we plan on adding more features soon, along with bringing back old features from 2.0.
