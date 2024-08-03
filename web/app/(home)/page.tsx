@@ -16,7 +16,7 @@ export default async function Landing() {
               .
             </h1>
             <p className="text-neutral-400 [text-wrap:pretty]">
-              Keep your counting channel clean and organized with Countify.
+              Keep your counting channel(s) clean and organized with Countify.
             </p>
           </div>
           <div className="flex items-center gap-2">
