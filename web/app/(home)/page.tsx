@@ -1,11 +1,22 @@
 import { buttonVariants } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { ArrowRight, Megaphone, Plus } from "lucide-react";
+import Link from "next/link";
 
 export default async function Landing() {
   return (
     <div className="mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-[90rem] flex-col p-6">
       <div className="flex grow flex-col gap-4 md:flex-row">
         <div className="flex flex-col items-center justify-center gap-3 text-center md:items-start md:text-left">
+          <Link
+            href="/blog/v3-alpha"
+            className="flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors hover:bg-accent"
+          >
+            <Megaphone className="h-5 w-5 text-primary" />
+            <p>
+              3.0 is now in alpha! Learn more{" "}
+              <ArrowRight className="inline h-4 w-4" />
+            </p>
+          </Link>
           <div className="flex flex-col gap-2">
             <h1 className="text-5xl font-bold tracking-tighter [text-wrap:balance]">
               Meet your{" "}
