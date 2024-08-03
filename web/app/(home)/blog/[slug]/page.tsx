@@ -47,7 +47,7 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
           ))}
         </div>
       </div>
-      <div className="prose mx-auto max-w-3xl py-6 text-left">
+      <div className="prose mx-auto w-full max-w-3xl py-6 text-left">
         <page.data.exports.default />
       </div>
     </div>

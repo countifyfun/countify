@@ -14,17 +14,13 @@ export default function Blog() {
           Keep up with the latest Countify news and updates.
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="mx-auto flex w-full max-w-xl flex-col gap-2">
         {posts.map((post) => (
           <Link
             key={post.slugs[0]}
             href={post.url}
             className="flex flex-col gap-2 rounded-lg border p-4 transition-colors hover:bg-accent"
           >
-            <h2 className="text-xl font-bold">{post.data.title}</h2>
-            <p className="text-sm text-neutral-700 [text-wrap:pretty] dark:text-neutral-300">
-              {post.data.description}
-            </p>
             <time
               dateTime={new Date(post.data.date).toLocaleString()}
               className="text-xs text-muted-foreground"
@@ -35,6 +31,12 @@ export default function Blog() {
                 year: "numeric",
               })}
             </time>
+            <div className="flex flex-col gap-1">
+              <h2 className="text-xl font-bold">{post.data.title}</h2>
+              <p className="text-sm text-muted-foreground [text-wrap:pretty]">
+                {post.data.description}
+              </p>
+            </div>
           </Link>
         ))}
       </div>
