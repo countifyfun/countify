@@ -1,11 +1,24 @@
 import { type DocsLayoutProps } from "fumadocs-ui/layout";
 import { type HomeLayoutProps } from "fumadocs-ui/home-layout";
 import { pageTree } from "@/app/source";
+import logo from "../public/logo.png";
+import Image from "next/image";
 
 // shared configuration
 export const baseOptions: HomeLayoutProps = {
   nav: {
-    title: "My App",
+    title: (
+      <>
+        <Image
+          src={logo}
+          alt="Countify Logo"
+          width={20}
+          height={20}
+          className="rounded-full"
+        />
+        <span className="font-medium max-md:[header_&]:hidden">Countify</span>
+      </>
+    ),
   },
   links: [
     {
