@@ -22,7 +22,7 @@ export default function Blog() {
             className="flex flex-col gap-2 rounded-lg border p-4 transition-colors hover:bg-accent"
           >
             <h2 className="text-xl font-bold">{post.data.title}</h2>
-            <p className="text-sm text-neutral-300 [text-wrap:pretty]">
+            <p className="text-sm text-neutral-700 [text-wrap:pretty] dark:text-neutral-300">
               {post.data.description}
             </p>
             <time
