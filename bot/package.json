@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "BUN_CONFIG_NO_CLEAR_TERMINAL_ON_RELOAD=1 bun with-env bun --watch src/index.ts",
+    "start": "bun with-env bun src/index.ts",
     "typecheck": "tsc --noEmit",
     "with-env": "dotenv -e ../.env --"
   },
