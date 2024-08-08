@@ -1,0 +1,5 @@
+{
+  "title": "docs",
+  "root": true,
+  "pages": ["index", "getting-started", "api"]
+}
