@@ -4,7 +4,13 @@ import eslintPrettierRecommended from "eslint-plugin-prettier/recommended";
 
 export default tseslint.config(
   {
-    ignores: ["docker-data/*", "node_modules", ".turbo"],
+    ignores: [
+      "docker-data/*",
+      "node_modules",
+      ".turbo",
+      "web/.next",
+      "web/components/ui",
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
