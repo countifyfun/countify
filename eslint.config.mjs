@@ -10,6 +10,7 @@ export default tseslint.config(
       ".turbo",
       "web/.next",
       "web/components/ui",
+      "web/.map.ts",
     ],
   },
   eslint.configs.recommended,

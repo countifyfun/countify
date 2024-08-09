@@ -7,7 +7,6 @@ import type { Command } from "../../structures/command";
 import { api } from "../../utils/trpc";
 import { TRPCClientError } from "@trpc/client";
 import { isNumber, stripCommas } from "../../utils/numbers";
-import { isNamedTupleMember } from "typescript";
 
 export default {
   description: "Add a counting channel",

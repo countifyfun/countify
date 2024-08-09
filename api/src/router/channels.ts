@@ -106,7 +106,7 @@ export const channelsRouter = router({
         .where(
           and(
             (eq(channels.id, input.channelId),
-              eq(channels.guildId, input.guildId))
+            eq(channels.guildId, input.guildId))
           )
         );
       return { success: true };
@@ -126,7 +126,7 @@ export const channelsRouter = router({
         .where(
           and(
             (eq(channels.id, input.channelId),
-              eq(channels.guildId, input.guildId))
+            eq(channels.guildId, input.guildId))
           )
         );
       return { success: true };
@@ -146,7 +146,7 @@ export const channelsRouter = router({
         .where(
           and(
             (eq(channels.id, input.channelId),
-              eq(channels.guildId, input.guildId))
+            eq(channels.guildId, input.guildId))
           )
         );
       return { success: true };
