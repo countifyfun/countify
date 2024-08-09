@@ -18,6 +18,11 @@
         "!.next/cache/**"
       ]
     },
-    "typecheck": {}
+    "typecheck": {},
+    "//#lint:root": {
+      "outputs": [
+        ".eslintcache"
+      ]
+    }
   }
 }
