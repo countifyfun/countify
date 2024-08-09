@@ -1,12 +1,7 @@
 import { TRPCClientError } from "@trpc/client";
 import type { BotClient } from "../structures/client";
 import { api } from "../utils/trpc";
-
-const isNumber = (str: string) => /^\d+$/.test(str);
-
-function stripCommas(str: string) {
-  return str.replace(/,/g, "");
-}
+import { isNumber, stripCommas } from "../utils/numbers";
 
 export default (client: BotClient) => {
   client.on("messageCreate", async (message) => {

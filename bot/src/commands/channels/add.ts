@@ -1,7 +1,13 @@
-import { ApplicationCommandOptionType, ChannelType } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  ChannelType,
+  TextChannel,
+} from "discord.js";
 import type { Command } from "../../structures/command";
 import { api } from "../../utils/trpc";
 import { TRPCClientError } from "@trpc/client";
+import { isNumber, stripCommas } from "../../utils/numbers";
+import { isNamedTupleMember } from "typescript";
 
 export default {
   description: "Add a counting channel",
@@ -25,13 +31,30 @@ export default {
       ephemeral: true,
     });
 
-    const channel = interaction.options.getChannel("channel", true);
-    const count = interaction.options.getNumber("count") ?? 0;
+    const channel = interaction.options.getChannel(
+      "channel",
+      true
+    ) as TextChannel;
+    let count = interaction.options.getNumber("count");
+    let lastUserId = null;
+    if (!count) {
+      const lastMessage = (await channel.messages.fetch({ limit: 1 })).first();
+      if (lastMessage) {
+        const messageSplit = lastMessage.content.split(/[ :\n]+/);
+        const messageNumberString = stripCommas(messageSplit[0]);
+        if (isNumber(messageNumberString)) {
+          count = parseInt(messageNumberString, 10);
+          lastUserId = lastMessage.author.id;
+        }
+      }
+    }
+    if (!count) count = 0;
     try {
       await api.channels.addChannel.mutate({
         channelId: channel.id,
         name: channel.name,
         count,
+        lastUserId,
         guildId: interaction.guild.id,
       });
       return interaction.followUp(`Added ${channel} as a counting channel.`);
@@ -48,6 +71,7 @@ export default {
               channelId: channel.id,
               name: channel.name,
               count,
+              lastUserId,
               guildId: interaction.guild.id,
             }),
           ]);

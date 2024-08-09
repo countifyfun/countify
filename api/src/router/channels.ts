@@ -39,6 +39,7 @@ export const channelsRouter = router({
         guildId: z.string(),
         name: z.string(),
         count: z.number().default(0),
+        lastUserId: z.string().nullable(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -66,6 +67,7 @@ export const channelsRouter = router({
         guildId: input.guildId,
         name: input.name,
         count: input.count,
+        lastUserId: input.lastUserId,
       });
       return { success: true };
     }),
@@ -104,7 +106,7 @@ export const channelsRouter = router({
         .where(
           and(
             (eq(channels.id, input.channelId),
-            eq(channels.guildId, input.guildId))
+              eq(channels.guildId, input.guildId))
           )
         );
       return { success: true };
@@ -124,7 +126,7 @@ export const channelsRouter = router({
         .where(
           and(
             (eq(channels.id, input.channelId),
-            eq(channels.guildId, input.guildId))
+              eq(channels.guildId, input.guildId))
           )
         );
       return { success: true };
@@ -144,7 +146,7 @@ export const channelsRouter = router({
         .where(
           and(
             (eq(channels.id, input.channelId),
-            eq(channels.guildId, input.guildId))
+              eq(channels.guildId, input.guildId))
           )
         );
       return { success: true };
