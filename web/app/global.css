@@ -63,16 +63,14 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
 
-.prose
-  :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)):not(
-    :where([class~="group"])
-  ) {
-  @apply text-primary hover:opacity-100;
+.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)):not( :where([class~="peer"])) {
+  @apply text-primary;
 }
 
 header nav a.text-fd-primary {

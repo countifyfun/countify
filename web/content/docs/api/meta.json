@@ -1,0 +1,7 @@
+{
+  "title": "API",
+  "pages": [
+    "get-guild",
+    "get-channel"
+  ]
+}

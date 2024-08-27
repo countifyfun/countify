@@ -1,0 +1,123 @@
+openapi: 3.0.0
+info:
+  title: Countify API
+  version: 3.0.0
+servers:
+  - url: https://api.countify.fun
+components:
+  schemas: {}
+  parameters: {}
+paths:
+  /guilds/{id}:
+    get:
+      summary: Get a guild
+      description: Get information about a specific guild
+      operationId: getGuild
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Retrive a guild
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  channels:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        count:
+                          type: number
+                      required:
+                        - id
+                        - name
+                        - count
+                required:
+                  - id
+                  - name
+                  - channels
+        "404":
+          description: Guild not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
+  /guilds/{guildId}/channels/{channelId}:
+    get:
+      summary: Get a counting channel
+      description: Get information about a specific counting channel
+      operationId: getChannel
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: guildId
+          in: path
+        - schema:
+            type: string
+          required: true
+          name: channelId
+          in: path
+      responses:
+        "200":
+          description: Retrive a counting channel
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  count:
+                    type: number
+                  lastUserId:
+                    type: string
+                    nullable: true
+                  guild:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                required:
+                  - id
+                  - name
+                  - count
+                  - lastUserId
+                  - guild
+        "404":
+          description: Channel or guild not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error

@@ -6,32 +6,37 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:api": "bun with-env bun with-env bun ./scripts/build-api.ts",
+    "with-env": "dotenv -e ../.env --"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "fumadocs-core": "13.0.4",
-    "fumadocs-mdx": "9.0.0",
-    "fumadocs-ui": "13.0.4",
+    "fumadocs-core": "^13.3.2",
+    "fumadocs-mdx": "^9.0.2",
+    "fumadocs-openapi": "^5.4.2",
+    "fumadocs-ui": "^13.3.2",
     "lucide-react": "^0.424.0",
-    "next": "^14.2.5",
+    "next": "^14.2.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tailwind-merge": "^2.4.0",
-    "tailwindcss-3d": "^1.0.6",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-3d": "^1.0.7",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/mdx": "^2.0.13",
-    "@types/react": "^18.3.3",
+    "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.39",
-    "prettier-plugin-tailwindcss": "^0.6.5",
-    "tailwindcss": "^3.4.6",
-    "typescript": "^5.5.4"
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "rimraf": "^6.0.1",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4",
+    "yaml": "^2.5.0"
   }
 }
