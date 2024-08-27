@@ -2,6 +2,7 @@ import { db } from "../utils/db";
 import { and, eq } from "drizzle-orm";
 import { channels, guilds } from "../utils/db/schema";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
+import { redis } from "../utils/redis";
 
 export const restRouter = new OpenAPIHono();
 
@@ -50,6 +51,10 @@ const guildsRoute = createRoute({
 
 restRouter.openapi(guildsRoute, async (c) => {
   const { id } = c.req.valid("param");
+
+  const cachedData = await redis.get(`guild:${id}`);
+  if (cachedData) return c.json(JSON.parse(cachedData), 200);
+
   const guild = await db.query.guilds.findFirst({
     where: eq(guilds.id, id),
     with: {
@@ -57,20 +62,23 @@ restRouter.openapi(guildsRoute, async (c) => {
     },
   });
   if (!guild) return c.json({ error: "Guild not found" }, 404);
-  return c.json(
-    {
-      id: guild.id,
-      name: guild.name,
-      channels: guild.channels
-        .map((channel) => ({
-          id: channel.id,
-          name: channel.name,
-          count: channel.count ?? 0,
-        }))
-        .sort((a, b) => a.count - b.count),
-    },
-    200
-  );
+
+  const data = {
+    id: guild.id,
+    name: guild.name,
+    channels: guild.channels
+      .map((channel) => ({
+        id: channel.id,
+        name: channel.name,
+        count: channel.count ?? 0,
+      }))
+      .sort((a, b) => a.count - b.count),
+  };
+  await redis.set(`guild:${guild.id}`, JSON.stringify(data), {
+    EX: 2,
+  });
+
+  return c.json(data, 200);
 });
 
 const channelRoute = createRoute({
@@ -118,6 +126,10 @@ const channelRoute = createRoute({
 
 restRouter.openapi(channelRoute, async (c) => {
   const { guildId, channelId } = c.req.valid("param");
+
+  const cachedData = await redis.get(`channel:${guildId}:${channelId}`);
+  if (cachedData) return c.json(JSON.parse(cachedData), 200);
+
   const channel = await db.query.channels.findFirst({
     where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
     with: {
@@ -127,17 +139,19 @@ restRouter.openapi(channelRoute, async (c) => {
   if (!channel) return c.json({ error: "Channel not found" }, 404);
   if (!channel.guilds) return c.json({ error: "Guild not found" }, 404);
 
-  return c.json(
-    {
-      id: channel.id,
-      name: channel.name,
-      count: channel.count ?? 0,
-      lastUserId: channel.lastUserId,
-      guild: {
-        id: channel.guilds.id,
-        name: channel.guilds.name,
-      },
+  const data = {
+    id: channel.id,
+    name: channel.name,
+    count: channel.count ?? 0,
+    lastUserId: channel.lastUserId,
+    guild: {
+      id: channel.guilds.id,
+      name: channel.guilds.name,
     },
-    200
-  );
+  };
+  await redis.set(`channel:${guildId}:${channelId}`, JSON.stringify(data), {
+    EX: 2,
+  });
+
+  return c.json(data, 200);
 });

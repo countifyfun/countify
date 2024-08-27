@@ -16,7 +16,8 @@
     "@trpc/server": "^10.45.2",
     "drizzle-orm": "^0.32.1",
     "hono": "^4.5.2",
-    "postgres": "^3.4.4"
+    "postgres": "^3.4.4",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@types/bun": "latest",

@@ -9,6 +9,8 @@ export const apiEnv = createEnv({
     DATABASE_PASSWORD: z.string().optional(),
     DATABASE_NAME: z.string().optional(),
     DATABASE_URL: z.string(),
+    REDIS_URL: z.string(),
+    REDIS_PASSWORD: z.string().optional(),
     AUTH_TOKEN: z.string(),
   },
   clientPrefix: undefined,
