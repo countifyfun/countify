@@ -4,8 +4,11 @@ import { Hono } from "hono";
 import { appRouter } from "./router";
 import { createContext } from "./utils/trpc";
 import { restRouter } from "./rest";
+import { createAnalyticsCronJob } from "./analytics";
 
 const app = new Hono();
+
+createAnalyticsCronJob();
 
 app.get("/", (c) => {
   return c.json({

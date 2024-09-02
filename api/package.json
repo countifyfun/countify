@@ -6,7 +6,7 @@
     "dev": "BUN_CONFIG_NO_CLEAR_TERMINAL_ON_RELOAD=1 bun with-env bun --watch src/index.ts",
     "start": "bun with-env bun src/index.ts",
     "typecheck": "tsc --noEmit",
-    "db:push": "bun with-env drizzle-kit push",
+    "db:push": "bun with-env drizzle-kit push && bun with-env bun src/utils/db/postpush.ts",
     "db:studio": "bun with-env drizzle-kit studio",
     "with-env": "dotenv -e ../.env --"
   },
@@ -14,6 +14,7 @@
     "@hono/trpc-server": "^0.3.2",
     "@hono/zod-openapi": "^0.15.1",
     "@trpc/server": "^10.45.2",
+    "cron": "^3.1.7",
     "drizzle-orm": "^0.32.1",
     "hono": "^4.5.2",
     "postgres": "^3.4.4",
