@@ -1,9 +1,6 @@
-import { apiEnv } from "@countify/env/api";
-import { trpcServer } from "@hono/trpc-server";
 import { Hono } from "hono";
-import { appRouter } from "./router";
-import { createContext } from "./utils/trpc";
-import { restRouter } from "./rest";
+import { guildsRouter } from "./router/guilds";
+import { channelsRouter } from "./router/channels";
 
 const app = new Hono();
 
@@ -13,21 +10,8 @@ app.get("/", (c) => {
   });
 });
 
-app.route("/", restRouter);
-
-app.use(
-  "/trpc/*",
-  async (c, next) => {
-    if (c.req.header("authorization") !== apiEnv.AUTH_TOKEN) {
-      return c.json({ error: "Unauthorized" }, 401);
-    }
-    return next();
-  },
-  trpcServer({
-    router: appRouter,
-    createContext,
-  })
-);
+const routes = app.route("/", guildsRouter).route("/", channelsRouter);
+export type AppType = typeof routes;
 
 Bun.serve({
   fetch: app.fetch,

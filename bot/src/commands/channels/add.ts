@@ -4,8 +4,7 @@ import {
   TextChannel,
 } from "discord.js";
 import type { Command } from "../../structures/command";
-import { api } from "../../utils/trpc";
-import { TRPCClientError } from "@trpc/client";
+import { api } from "../../utils/api";
 import { isNumber, stripCommas } from "../../utils/numbers";
 
 export default {
@@ -48,43 +47,45 @@ export default {
       }
     }
     if (!count) count = 0;
-    try {
-      await api.channels.addChannel.mutate({
-        channelId: channel.id,
+
+    let res = await api.guilds[":guildId"].channels.$post({
+      json: {
+        id: channel.id,
+        guildId: interaction.guild.id,
         name: channel.name,
         count,
         lastUserId,
+      },
+      param: {
         guildId: interaction.guild.id,
-      });
-      return interaction.followUp(`Added ${channel} as a counting channel.`);
-    } catch (err) {
-      if (err instanceof TRPCClientError) {
-        if (err.message === "Guild not found") {
-          await Promise.all([
-            api.guilds.createGuild.mutate({
-              id: interaction.guild.id,
-              name: interaction.guild.name,
-              iconUrl: interaction.guild.iconURL(),
-            }),
-            api.channels.addChannel.mutate({
-              channelId: channel.id,
-              name: channel.name,
-              count,
-              lastUserId,
-              guildId: interaction.guild.id,
-            }),
-          ]);
-          return interaction.followUp(
-            `Added ${channel} as a counting channel.`
-          );
-        } else if (err.message === "Channel already exists") {
-          return interaction.followUp(
-            `${channel} has already been added as a counting channel.`
-          );
-        }
-      }
+      },
+    });
 
-      console.error(err);
+    if (res.status === 409)
+      return interaction.followUp(`${channel} is already a counting channel.`);
+
+    if (res.status === 404 && (await res.json()).error === "Guild not found") {
+      await api.guilds.$post({
+        json: {
+          id: interaction.guild.id,
+          name: interaction.guild.name,
+          iconUrl: interaction.guild.iconURL(),
+        },
+      });
+      res = await api.guilds[":guildId"].channels.$post({
+        json: {
+          id: channel.id,
+          guildId: interaction.guild.id,
+          name: channel.name,
+          count,
+          lastUserId,
+        },
+        param: {
+          guildId: interaction.guild.id,
+        },
+      });
     }
+
+    interaction.followUp(`Added ${channel} as a counting channel.`);
   },
 } satisfies Command;

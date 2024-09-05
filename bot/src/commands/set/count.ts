@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, ChannelType } from "discord.js";
 import type { Command } from "../../structures/command";
-import { api } from "../../utils/trpc";
+import { api } from "../../utils/api";
 
 export default {
   description: "Update a counting channel's current count",
@@ -25,20 +25,27 @@ export default {
     const count = interaction.options.getInteger("count", true);
     const channel =
       interaction.options.getChannel("channel") ?? interaction.channel!;
-    const dbChannel = await api.channels.getChannel.query({
-      guildId: interaction.guild.id,
-      channelId: channel.id,
+
+    const res = await api.guilds[":guildId"].channels[":channelId"].$get({
+      param: {
+        guildId: interaction.guild.id,
+        channelId: channel.id,
+      },
     });
 
-    if (!dbChannel)
+    if (res.status === 404)
       return interaction.followUp(
         `${channel} has not been set as a counting channel.`
       );
 
-    await api.channels.setCount.mutate({
-      guildId: interaction.guild.id,
-      channelId: channel.id,
-      count,
+    await api.guilds[":guildId"].channels[":channelId"].$patch({
+      json: {
+        count,
+      },
+      param: {
+        guildId: interaction.guild.id,
+        channelId: channel.id,
+      },
     });
 
     return interaction.followUp(

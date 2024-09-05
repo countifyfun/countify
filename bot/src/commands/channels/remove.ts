@@ -1,7 +1,6 @@
-import { TRPCClientError } from "@trpc/client";
 import { ApplicationCommandOptionType, ChannelType } from "discord.js";
 import type { Command } from "../../structures/command";
-import { api } from "../../utils/trpc";
+import { api } from "../../utils/api";
 
 export default {
   description: "Remove a counting channel",
@@ -20,24 +19,19 @@ export default {
     });
 
     const channel = interaction.options.getChannel("channel", true);
-    try {
-      await api.channels.removeChannel.mutate({
-        channelId: channel.id,
-        guildId: interaction.guild.id,
-      });
-      return interaction.followUp(
-        `Removed ${channel} from the counting channels.`
-      );
-    } catch (err) {
-      if (err instanceof TRPCClientError) {
-        if (err.message.includes("not found")) {
-          return interaction.followUp(
-            `${channel} has not been added as a counting channel.`
-          );
-        }
-      }
 
-      console.error(err);
-    }
+    const res = await api.guilds[":guildId"].channels[":channelId"].$delete({
+      param: {
+        guildId: interaction.guild.id,
+        channelId: channel.id,
+      },
+    });
+
+    if (res.status === 404)
+      return interaction.followUp(`${channel} is not a counting channel.`);
+
+    return interaction.followUp(
+      `Removed ${channel} from the counting channels.`
+    );
   },
 } satisfies Command;
