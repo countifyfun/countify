@@ -2,10 +2,18 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { guildsRouter } from "./router/guilds";
 import { channelsRouter } from "./router/channels";
 import { createAnalyticsCronJob } from "./analytics";
+import { cors } from "hono/cors";
+
+createAnalyticsCronJob();
 
 const app = new OpenAPIHono();
 
-createAnalyticsCronJob();
+app.use(
+  cors({
+    origin: "*",
+    allowMethods: ["GET"],
+  })
+);
 
 app.get("/", (c) => {
   return c.json({
