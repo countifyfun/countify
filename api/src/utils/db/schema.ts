@@ -20,7 +20,7 @@ export const channels = pgTable("channels", {
 });
 
 export const channelRelations = relations(channels, ({ one }) => ({
-  guilds: one(guilds, {
+  guild: one(guilds, {
     fields: [channels.guildId],
     references: [guilds.id],
   }),

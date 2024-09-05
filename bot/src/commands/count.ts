@@ -4,7 +4,7 @@ import {
   EmbedBuilder,
 } from "discord.js";
 import type { Command } from "../structures/command";
-import { api } from "../utils/trpc";
+import { api } from "../utils/api";
 
 export default {
   description: "Get the count of a counting channel",
@@ -22,15 +22,18 @@ export default {
 
     const channel =
       interaction.options.getChannel("channel") ?? interaction.channel!;
-    const dbChannel = await api.channels.getChannel.query({
-      guildId: interaction.guild.id,
-      channelId: channel.id,
+    const res = await api.guilds[":guildId"].channels[":channelId"].$get({
+      param: {
+        guildId: interaction.guild.id,
+        channelId: channel.id,
+      },
     });
-
-    if (!dbChannel)
+    if (res.status === 404)
       return interaction.followUp(
         `${channel} has not been set as a counting channel`
       );
+
+    const dbChannel = await res.json();
 
     return interaction.followUp({
       embeds: [

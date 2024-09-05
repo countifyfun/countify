@@ -1,154 +1,168 @@
-import { z } from "zod";
-import { procedure, router } from "../utils/trpc";
-import { channels, guilds } from "../utils/db/schema";
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
+import { redis } from "../utils/redis";
+import { db } from "../utils/db";
 import { and, eq } from "drizzle-orm";
-import { TRPCError } from "@trpc/server";
+import { channels, guilds } from "../utils/db/schema";
+import { apiEnv } from "@countify/env/api";
+import { onlyAllowInternalRequests } from "../utils/middleware";
+import { zValidator } from "@hono/zod-validator";
 
-export const channelsRouter = router({
-  getChannels: procedure
-    .input(z.object({ guildId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      if (
-        !(await ctx.db.query.guilds.findFirst({
-          where: eq(guilds.id, input.guildId),
-        }))
-      )
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Guild not found",
-        });
+const channelRoute = createRoute({
+  method: "get",
+  summary: "Get a counting channel",
+  description: "Get information about a specific counting channel",
+  operationId: "getChannel",
+  path: "/guilds/{guildId}/channels/{channelId}",
+  request: {
+    params: z.object({
+      guildId: z.string(),
+      channelId: z.string(),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Retrive a counting channel",
+      content: {
+        "application/json": {
+          schema: z.object({
+            id: z.string(),
+            name: z.string(),
+            count: z.number(),
+            lastUserId: z.string().nullable(),
+            guild: z.object({
+              id: z.string(),
+              name: z.string(),
+            }),
+          }),
+        },
+      },
+    },
+    404: {
+      description: "Channel or guild not found",
+      content: {
+        "application/json": {
+          schema: z.object({
+            error: z.string(),
+          }),
+        },
+      },
+    },
+  },
+});
 
-      return await ctx.db.query.channels.findMany({
-        where: eq(channels.guildId, input.guildId),
-      });
-    }),
-  getChannel: procedure
-    .input(z.object({ guildId: z.string(), channelId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      return await ctx.db.query.channels.findFirst({
-        where: and(
-          eq(channels.guildId, input.guildId),
-          eq(channels.id, input.channelId)
-        ),
-      });
-    }),
-  addChannel: procedure
-    .input(
+export const channelsRouter = new OpenAPIHono()
+  .openapi(channelRoute, async (c) => {
+    const { guildId, channelId } = c.req.valid("param");
+
+    const cachedData = await redis.get(`channel:${guildId}:${channelId}`);
+    if (cachedData && c.req.header("Authorization") !== apiEnv.AUTH_TOKEN)
+      return c.json(JSON.parse(cachedData), 200);
+
+    const channel = await db.query.channels.findFirst({
+      where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
+      with: {
+        guild: true,
+      },
+    });
+    if (!channel) return c.json({ error: "Channel not found" }, 404);
+    if (!channel.guild) return c.json({ error: "Guild not found" }, 404);
+
+    const data = {
+      id: channel.id,
+      name: channel.name,
+      count: channel.count ?? 0,
+      lastUserId: channel.lastUserId,
+      guild: {
+        id: channel.guild.id,
+        name: channel.guild.name,
+      },
+    };
+    await redis.set(`channel:${guildId}:${channelId}`, JSON.stringify(data), {
+      EX: 2,
+    });
+
+    return c.json(data, 200);
+  })
+  .post(
+    "/guilds/:guildId/channels",
+    onlyAllowInternalRequests,
+    zValidator(
+      "json",
       z.object({
-        channelId: z.string(),
+        id: z.string(),
         guildId: z.string(),
         name: z.string(),
         count: z.number().default(0),
         lastUserId: z.string().nullable(),
       })
-    )
-    .mutation(async ({ ctx, input }) => {
-      if (
-        !(await ctx.db.query.guilds.findFirst({
-          where: eq(guilds.id, input.guildId),
-        }))
-      )
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Guild not found",
-        });
-      if (
-        await ctx.db.query.channels.findFirst({
-          where: eq(channels.id, input.channelId),
-        })
-      )
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Channel already exists",
-        });
+    ),
+    async (c) => {
+      const { guildId } = c.req.param();
+      const { id, name, count, lastUserId } = c.req.valid("json");
 
-      await ctx.db.insert(channels).values({
-        id: input.channelId,
-        guildId: input.guildId,
-        name: input.name,
-        count: input.count,
-        lastUserId: input.lastUserId,
+      if (!(await db.query.guilds.findFirst({ where: eq(guilds.id, guildId) })))
+        return c.json({ error: "Guild not found" }, 404);
+      if (await db.query.channels.findFirst({ where: eq(channels.id, id) }))
+        return c.json({ error: "Channel already exists" }, 409);
+
+      await db.insert(channels).values({
+        id,
+        guildId,
+        name,
+        count,
+        lastUserId,
       });
-      return { success: true };
-    }),
-  removeChannel: procedure
-    .input(
-      z.object({
-        guildId: z.string(),
-        channelId: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      if (
-        !(await ctx.db.query.guilds.findFirst({
-          where: eq(guilds.id, input.guildId),
-        }))
-      )
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Guild not found",
-        });
-      if (
-        !(await ctx.db.query.channels.findFirst({
-          where: and(
-            eq(channels.id, input.channelId),
-            eq(channels.guildId, input.guildId)
-          ),
-        }))
-      )
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Channel not found",
-        });
 
-      await ctx.db
-        .delete(channels)
-        .where(
-          and(
-            (eq(channels.id, input.channelId),
-            eq(channels.guildId, input.guildId))
-          )
-        );
-      return { success: true };
-    }),
-  setCount: procedure
-    .input(
+      return c.json({ success: true }, 200);
+    }
+  )
+  .patch(
+    "/guilds/:guildId/channels/:channelId",
+    onlyAllowInternalRequests,
+    zValidator(
+      "json",
       z.object({
-        guildId: z.string(),
-        channelId: z.string(),
-        count: z.number(),
+        name: z.string().optional(),
+        count: z.number().optional(),
+        lastUserId: z.string().optional(),
       })
-    )
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db
+    ),
+    async (c) => {
+      const { guildId, channelId } = c.req.param();
+      const { name, count, lastUserId } = c.req.valid("json");
+
+      if (
+        !(await db.query.channels.findFirst({
+          where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
+        }))
+      )
+        return c.json({ error: "Channel not found" }, 404);
+
+      await db
         .update(channels)
-        .set({ count: input.count })
-        .where(
-          and(
-            (eq(channels.id, input.channelId),
-            eq(channels.guildId, input.guildId))
-          )
-        );
-      return { success: true };
-    }),
-  updateLastUser: procedure
-    .input(
-      z.object({
-        channelId: z.string(),
-        guildId: z.string(),
-        userId: z.string(),
-      })
+        .set({
+          name,
+          count,
+          lastUserId,
+        })
+        .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
+
+      return c.json({ success: true }, 200);
+    }
+  )
+  .delete("/guilds/:guildId/channels/:channelId", async (c) => {
+    const { guildId, channelId } = c.req.param();
+
+    if (
+      !(await db.query.channels.findFirst({
+        where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
+      }))
     )
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db
-        .update(channels)
-        .set({ lastUserId: input.userId })
-        .where(
-          and(
-            (eq(channels.id, input.channelId),
-            eq(channels.guildId, input.guildId))
-          )
-        );
-      return { success: true };
-    }),
-});
+      return c.json({ error: "Channel not found" }, 404);
+
+    await db
+      .delete(channels)
+      .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
+
+    return c.json({ success: true }, 200);
+  });
