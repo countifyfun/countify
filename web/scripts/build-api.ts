@@ -21,7 +21,7 @@ ${stringify(
     openapi: "3.0.0",
     info: {
       title: "Countify API",
-      version: "3.0.0-beta.1",
+      version: "3.0.0-alpha.1",
     },
     servers: [
       {
