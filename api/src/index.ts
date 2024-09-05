@@ -1,8 +1,8 @@
-import { Hono } from "hono";
+import { OpenAPIHono } from "@hono/zod-openapi";
 import { guildsRouter } from "./router/guilds";
 import { channelsRouter } from "./router/channels";
 
-const app = new Hono();
+const app = new OpenAPIHono();
 
 app.get("/", (c) => {
   return c.json({
@@ -10,7 +10,7 @@ app.get("/", (c) => {
   });
 });
 
-const routes = app.route("/", guildsRouter).route("/", channelsRouter);
+export const routes = app.route("/", guildsRouter).route("/", channelsRouter);
 export type AppType = typeof routes;
 
 Bun.serve({
