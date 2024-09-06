@@ -162,19 +162,23 @@ export const channelsRouter = new OpenAPIHono()
       return c.json({ success: true }, 200);
     }
   )
-  .delete("/guilds/:guildId/channels/:channelId", async (c) => {
-    const { guildId, channelId } = c.req.param();
+  .delete(
+    "/guilds/:guildId/channels/:channelId",
+    onlyAllowInternalRequests,
+    async (c) => {
+      const { guildId, channelId } = c.req.param();
 
-    if (
-      !(await db.query.channels.findFirst({
-        where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
-      }))
-    )
-      return c.json({ error: "Channel not found" }, 404);
+      if (
+        !(await db.query.channels.findFirst({
+          where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
+        }))
+      )
+        return c.json({ error: "Channel not found" }, 404);
 
-    await db
-      .delete(channels)
-      .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
+      await db
+        .delete(channels)
+        .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
 
-    return c.json({ success: true }, 200);
-  });
+      return c.json({ success: true }, 200);
+    }
+  );
