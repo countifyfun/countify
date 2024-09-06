@@ -33,6 +33,9 @@ const channelRoute = createRoute({
               id: z.string(),
               name: z.string(),
             }),
+            options: z.object({
+              oneByOne: z.boolean(),
+            }),
           }),
         },
       },
@@ -75,6 +78,9 @@ export const channelsRouter = new OpenAPIHono()
       guild: {
         id: channel.guild.id,
         name: channel.guild.name,
+      },
+      options: {
+        oneByOne: channel.oneByOne,
       },
     };
     await redis.set(`channel:${guildId}:${channelId}`, JSON.stringify(data), {
@@ -125,11 +131,16 @@ export const channelsRouter = new OpenAPIHono()
         name: z.string().optional(),
         count: z.number().optional(),
         lastUserId: z.string().optional(),
+        options: z
+          .object({
+            oneByOne: z.boolean().optional(),
+          })
+          .optional(),
       })
     ),
     async (c) => {
       const { guildId, channelId } = c.req.param();
-      const { name, count, lastUserId } = c.req.valid("json");
+      const { name, count, lastUserId, options } = c.req.valid("json");
 
       if (
         !(await db.query.channels.findFirst({
@@ -144,6 +155,7 @@ export const channelsRouter = new OpenAPIHono()
           name,
           count,
           lastUserId,
+          oneByOne: options?.oneByOne,
         })
         .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
 

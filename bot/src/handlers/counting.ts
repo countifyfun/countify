@@ -17,6 +17,9 @@ export default (client: BotClient) => {
 
     const channel = await res.json();
 
+    if (channel.options.oneByOne && message.author.id === channel.lastUserId)
+      return message.delete();
+
     const messageSplit = message.content.split(/[ :\n]+/);
     const messageNumberString = stripCommas(messageSplit[0]);
     if (!isNumber(messageNumberString)) return message.delete();

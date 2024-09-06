@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { integer, pgTable, text } from "drizzle-orm/pg-core";
+import { boolean, integer, pgTable, text } from "drizzle-orm/pg-core";
 
 export const guilds = pgTable("guilds", {
   id: text("id").primaryKey(),
@@ -17,6 +17,7 @@ export const channels = pgTable("channels", {
   guildId: text("guild_id").notNull(),
   count: integer("count").notNull().default(0),
   lastUserId: text("last_user_id"),
+  oneByOne: boolean("one_by_one").notNull().default(false),
 });
 
 export const channelRelations = relations(channels, ({ one }) => ({
