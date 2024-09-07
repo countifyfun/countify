@@ -3,7 +3,6 @@ import { redis } from "../utils/redis";
 import { db } from "../utils/db";
 import { and, eq } from "drizzle-orm";
 import { channels, guilds } from "../utils/db/schema";
-import { apiEnv } from "@countify/env/api";
 import { onlyAllowInternalRequests } from "../utils/middleware";
 import { zValidator } from "@hono/zod-validator";
 
