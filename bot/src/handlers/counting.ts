@@ -23,6 +23,9 @@ export default (client: BotClient) => {
       return message.delete();
 
     const messageSplit = message.content.split(/[ :\n]+/);
+    if (!channel.settings.talking && messageSplit.length > 1)
+      return message.delete();
+
     const messageNumberString = stripCommas(messageSplit[0]);
     if (!isNumber(messageNumberString)) return message.delete();
 

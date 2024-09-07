@@ -107,6 +107,7 @@ export const channelsRouter = new OpenAPIHono()
         },
         settings: {
           oneByOne: channel.oneByOne,
+          talking: channel.talking,
         },
       });
     }
@@ -156,6 +157,7 @@ export const channelsRouter = new OpenAPIHono()
         settings: z
           .object({
             oneByOne: z.boolean().optional(),
+            talking: z.boolean().optional(),
           })
           .optional(),
       })

@@ -3,12 +3,12 @@ import type { Command } from "../../structures/command";
 import { api } from "../../utils/api";
 
 export default {
-  description: "Only allow one count per user.",
+  description: "Allow members to talk to each other in the counting channel.",
   options: [
     {
       type: ApplicationCommandOptionType.Boolean,
       name: "enabled",
-      description: "Whether one by one should be enabled or not",
+      description: "Whether talking should be enabled or not",
       required: false,
     },
     {
@@ -42,12 +42,12 @@ export default {
     const data = await res.json();
 
     const enabled =
-      interaction.options.getBoolean("enabled") ?? !data.settings?.oneByOne;
+      interaction.options.getBoolean("enabled") ?? !data.settings?.talking;
 
     await api.guilds[":guildId"].channels[":channelId"].$patch({
       json: {
         settings: {
-          oneByOne: enabled,
+          talking: enabled,
         },
       },
       param: {
@@ -57,7 +57,7 @@ export default {
     });
 
     return interaction.followUp(
-      `${enabled ? "Enabled" : "Disabled"} one by one for ${channel}.`
+      `${enabled ? "Enabled" : "Disabled"} talking for ${channel}.`
     );
   },
 } satisfies Command;

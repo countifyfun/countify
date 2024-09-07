@@ -18,6 +18,7 @@ export const channels = pgTable("channels", {
   count: integer("count").notNull().default(0),
   lastUserId: text("last_user_id"),
   oneByOne: boolean("one_by_one").notNull().default(false),
+  talking: boolean("talking").notNull().default(true),
 });
 
 export const channelRelations = relations(channels, ({ one }) => ({
