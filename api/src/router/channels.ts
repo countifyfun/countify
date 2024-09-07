@@ -108,6 +108,7 @@ export const channelsRouter = new OpenAPIHono()
         settings: {
           oneByOne: channel.oneByOne,
           talking: channel.talking,
+          resetOnFail: channel.resetOnFail,
         },
       });
     }
@@ -153,10 +154,11 @@ export const channelsRouter = new OpenAPIHono()
       z.object({
         name: z.string().optional(),
         count: z.number().optional(),
-        lastUserId: z.string().optional(),
+        lastUserId: z.string().nullable().optional(),
         settings: z
           .object({
             oneByOne: z.boolean().optional(),
+            resetOnFail: z.boolean().optional(),
             talking: z.boolean().optional(),
           })
           .optional(),
@@ -180,6 +182,8 @@ export const channelsRouter = new OpenAPIHono()
           count,
           lastUserId,
           oneByOne: settings?.oneByOne,
+          talking: settings?.talking,
+          resetOnFail: settings?.resetOnFail,
         })
         .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
 

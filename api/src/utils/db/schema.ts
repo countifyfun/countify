@@ -17,7 +17,9 @@ export const channels = pgTable("channels", {
   guildId: text("guild_id").notNull(),
   count: integer("count").notNull().default(0),
   lastUserId: text("last_user_id"),
+  // FIXME: should probably find a better way to do this
   oneByOne: boolean("one_by_one").notNull().default(false),
+  resetOnFail: boolean("reset_on_fail").notNull().default(false),
   talking: boolean("talking").notNull().default(true),
 });
 
