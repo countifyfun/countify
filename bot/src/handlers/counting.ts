@@ -7,7 +7,9 @@ export default (client: BotClient) => {
     if (message.author.bot || !message.guild) return;
 
     // TODO: cache all api calls to avoid spamming the api
-    const res = await api.guilds[":guildId"].channels[":channelId"].$get({
+    const res = await api.guilds[":guildId"].channels[
+      ":channelId"
+    ].internal.$get({
       param: {
         guildId: message.guild.id,
         channelId: message.channel.id,
@@ -17,7 +19,7 @@ export default (client: BotClient) => {
 
     const channel = await res.json();
 
-    if (channel.options.oneByOne && message.author.id === channel.lastUserId)
+    if (channel.settings.oneByOne && message.author.id === channel.lastUserId)
       return message.delete();
 
     const messageSplit = message.content.split(/[ :\n]+/);

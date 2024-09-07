@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, ChannelType } from "discord.js";
 import type { Command } from "../../structures/command";
 import { api } from "../../utils/api";
 
@@ -11,6 +11,13 @@ export default {
       description: "Whether one by one should be enabled or not.",
       required: false,
     },
+    {
+      type: ApplicationCommandOptionType.Channel,
+      name: "channel",
+      description: "The counting channel to update",
+      channelTypes: [ChannelType.GuildText],
+      required: false,
+    },
   ],
   run: async ({ interaction }) => {
     await interaction.deferReply({ ephemeral: true });
@@ -18,7 +25,9 @@ export default {
     const channel =
       interaction.options.getChannel("channel") ?? interaction.channel!;
 
-    const res = await api.guilds[":guildId"].channels[":channelId"].$get({
+    const res = await api.guilds[":guildId"].channels[
+      ":channelId"
+    ].internal.$get({
       param: {
         guildId: interaction.guild.id,
         channelId: channel.id,
@@ -33,11 +42,11 @@ export default {
     const data = await res.json();
 
     const enabled =
-      interaction.options.getBoolean("enabled") ?? !data.options?.oneByOne;
+      interaction.options.getBoolean("enabled") ?? !data.settings?.oneByOne;
 
     await api.guilds[":guildId"].channels[":channelId"].$patch({
       json: {
-        options: {
+        settings: {
           oneByOne: enabled,
         },
       },

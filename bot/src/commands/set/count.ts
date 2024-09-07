@@ -26,7 +26,9 @@ export default {
     const channel =
       interaction.options.getChannel("channel") ?? interaction.channel!;
 
-    const res = await api.guilds[":guildId"].channels[":channelId"].$get({
+    const res = await api.guilds[":guildId"].channels[
+      ":channelId"
+    ].internal.$get({
       param: {
         guildId: interaction.guild.id,
         channelId: channel.id,

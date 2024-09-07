@@ -33,9 +33,6 @@ const channelRoute = createRoute({
               id: z.string(),
               name: z.string(),
             }),
-            options: z.object({
-              oneByOne: z.boolean(),
-            }),
           }),
         },
       },
@@ -58,8 +55,7 @@ export const channelsRouter = new OpenAPIHono()
     const { guildId, channelId } = c.req.valid("param");
 
     const cachedData = await redis.get(`channel:${guildId}:${channelId}`);
-    if (cachedData && c.req.header("Authorization") !== apiEnv.AUTH_TOKEN)
-      return c.json(JSON.parse(cachedData), 200);
+    if (cachedData) return c.json(JSON.parse(cachedData), 200);
 
     const channel = await db.query.channels.findFirst({
       where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
@@ -79,9 +75,6 @@ export const channelsRouter = new OpenAPIHono()
         id: channel.guild.id,
         name: channel.guild.name,
       },
-      options: {
-        oneByOne: channel.oneByOne,
-      },
     };
     await redis.set(`channel:${guildId}:${channelId}`, JSON.stringify(data), {
       EX: 2,
@@ -89,6 +82,36 @@ export const channelsRouter = new OpenAPIHono()
 
     return c.json(data, 200);
   })
+  .get(
+    "/guilds/:guildId/channels/:channelId/internal",
+    onlyAllowInternalRequests,
+    async (c) => {
+      const { guildId, channelId } = c.req.param();
+
+      const channel = await db.query.channels.findFirst({
+        where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
+        with: {
+          guild: true,
+        },
+      });
+      if (!channel) return c.json({ error: "Channel not found" }, 404);
+      if (!channel.guild) return c.json({ error: "Guild not found" }, 404);
+
+      return c.json({
+        id: channel.id,
+        name: channel.name,
+        count: channel.count ?? 0,
+        lastUserId: channel.lastUserId,
+        guild: {
+          id: channel.guild.id,
+          name: channel.guild.name,
+        },
+        settings: {
+          oneByOne: channel.oneByOne,
+        },
+      });
+    }
+  )
   .post(
     "/guilds/:guildId/channels",
     onlyAllowInternalRequests,
@@ -131,7 +154,7 @@ export const channelsRouter = new OpenAPIHono()
         name: z.string().optional(),
         count: z.number().optional(),
         lastUserId: z.string().optional(),
-        options: z
+        settings: z
           .object({
             oneByOne: z.boolean().optional(),
           })
@@ -140,7 +163,7 @@ export const channelsRouter = new OpenAPIHono()
     ),
     async (c) => {
       const { guildId, channelId } = c.req.param();
-      const { name, count, lastUserId, options } = c.req.valid("json");
+      const { name, count, lastUserId, settings } = c.req.valid("json");
 
       if (
         !(await db.query.channels.findFirst({
@@ -155,7 +178,7 @@ export const channelsRouter = new OpenAPIHono()
           name,
           count,
           lastUserId,
-          oneByOne: options?.oneByOne,
+          oneByOne: settings?.oneByOne,
         })
         .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
 
