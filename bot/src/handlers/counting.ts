@@ -84,6 +84,12 @@ export default (client: BotClient) => {
         channelId: message.channel.id,
       },
     });
+
+    if (channel.settings.pinMilestones && nextCount % 100 === 0) {
+      const pins = await message.channel.messages.fetchPinned();
+      if (pins.size >= 50) await pins.first()?.unpin();
+      await message.pin();
+    }
   });
 
   client.on("messageDelete", async (message) => {

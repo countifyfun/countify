@@ -111,6 +111,7 @@ export const channelsRouter = new OpenAPIHono()
           talking: channel.talking,
           resetOnFail: channel.resetOnFail,
           noDeletion: channel.noDeletion,
+          pinMilestones: channel.pinMilestones,
         },
       });
     }
@@ -165,6 +166,7 @@ export const channelsRouter = new OpenAPIHono()
             resetOnFail: z.boolean().optional(),
             talking: z.boolean().optional(),
             noDeletion: z.boolean().optional(),
+            pinMilestones: z.boolean().optional(),
           })
           .optional(),
       })

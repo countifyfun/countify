@@ -23,6 +23,7 @@ export const channels = pgTable("channels", {
   resetOnFail: boolean("reset_on_fail").notNull().default(false),
   talking: boolean("talking").notNull().default(true),
   noDeletion: boolean("no_deletion").notNull().default(true),
+  pinMilestones: boolean("pin_milestones").notNull().default(false),
 });
 
 export const channelRelations = relations(channels, ({ one }) => ({
