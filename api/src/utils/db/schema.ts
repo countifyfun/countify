@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm";
-import { boolean, integer, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 export const guilds = pgTable("guilds", {
   id: text("id").primaryKey(),
@@ -35,3 +42,14 @@ export const channelRelations = relations(channels, ({ one }) => ({
     references: [guilds.id],
   }),
 }));
+
+export const analytics = pgTable("analytics", {
+  timestamp: timestamp("timestamp", { withTimezone: true }).primaryKey(),
+  guildId: text("guild_id")
+    .notNull()
+    .references(() => guilds.id),
+  channelId: text("channel_id")
+    .notNull()
+    .references(() => channels.id),
+  count: integer("count").notNull().default(0),
+});
