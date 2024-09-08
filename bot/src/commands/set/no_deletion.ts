@@ -3,13 +3,13 @@ import type { Command } from "../../structures/command";
 import { api } from "../../utils/api";
 
 export default {
-  description: "Update a counting channel's current count",
+  description: "Resend the last count if it gets deleted accidentally.",
   options: [
     {
-      type: ApplicationCommandOptionType.Integer,
-      name: "count",
-      description: "The new count for the counting channel",
-      required: true,
+      type: ApplicationCommandOptionType.Boolean,
+      name: "enabled",
+      description: "Whether no deletion should be enabled or not",
+      required: false,
     },
     {
       type: ApplicationCommandOptionType.Channel,
@@ -22,7 +22,6 @@ export default {
   run: async ({ interaction }) => {
     await interaction.deferReply({ ephemeral: true });
 
-    const count = interaction.options.getInteger("count", true);
     const channel =
       interaction.options.getChannel("channel") ?? interaction.channel!;
 
@@ -40,9 +39,16 @@ export default {
         `${channel} has not been set as a counting channel.`
       );
 
+    const data = await res.json();
+
+    const enabled =
+      interaction.options.getBoolean("enabled") ?? !data.settings?.noDeletion;
+
     await api.guilds[":guildId"].channels[":channelId"].$patch({
       json: {
-        count,
+        settings: {
+          noDeletion: enabled,
+        },
       },
       param: {
         guildId: interaction.guild.id,
@@ -51,7 +57,7 @@ export default {
     });
 
     return interaction.followUp(
-      `${channel}'s count has been updated to ${count.toLocaleString()}.`
+      `${enabled ? "Enabled" : "Disabled"} no deletion for ${channel}.`
     );
   },
 } satisfies Command;

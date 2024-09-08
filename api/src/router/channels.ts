@@ -3,7 +3,6 @@ import { redis } from "../utils/redis";
 import { db } from "../utils/db";
 import { and, eq } from "drizzle-orm";
 import { channels, guilds } from "../utils/db/schema";
-import { apiEnv } from "@countify/env/api";
 import { onlyAllowInternalRequests } from "../utils/middleware";
 import { zValidator } from "@hono/zod-validator";
 
@@ -55,8 +54,7 @@ export const channelsRouter = new OpenAPIHono()
     const { guildId, channelId } = c.req.valid("param");
 
     const cachedData = await redis.get(`channel:${guildId}:${channelId}`);
-    if (cachedData && c.req.header("Authorization") !== apiEnv.AUTH_TOKEN)
-      return c.json(JSON.parse(cachedData), 200);
+    if (cachedData) return c.json(JSON.parse(cachedData), 200);
 
     const channel = await db.query.channels.findFirst({
       where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
@@ -83,6 +81,41 @@ export const channelsRouter = new OpenAPIHono()
 
     return c.json(data, 200);
   })
+  .get(
+    "/guilds/:guildId/channels/:channelId/internal",
+    onlyAllowInternalRequests,
+    async (c) => {
+      const { guildId, channelId } = c.req.param();
+
+      const channel = await db.query.channels.findFirst({
+        where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
+        with: {
+          guild: true,
+        },
+      });
+      if (!channel) return c.json({ error: "Channel not found" }, 404);
+      if (!channel.guild) return c.json({ error: "Guild not found" }, 404);
+
+      return c.json({
+        id: channel.id,
+        name: channel.name,
+        count: channel.count ?? 0,
+        lastUserId: channel.lastUserId,
+        lastMessageId: channel.lastMessageId,
+        guild: {
+          id: channel.guild.id,
+          name: channel.guild.name,
+        },
+        settings: {
+          oneByOne: channel.oneByOne,
+          talking: channel.talking,
+          resetOnFail: channel.resetOnFail,
+          noDeletion: channel.noDeletion,
+          pinMilestones: channel.pinMilestones,
+        },
+      });
+    }
+  )
   .post(
     "/guilds/:guildId/channels",
     onlyAllowInternalRequests,
@@ -94,6 +127,7 @@ export const channelsRouter = new OpenAPIHono()
         name: z.string(),
         count: z.number().default(0),
         lastUserId: z.string().nullable(),
+        lastMessageId: z.string().nullable(),
       })
     ),
     async (c) => {
@@ -124,12 +158,24 @@ export const channelsRouter = new OpenAPIHono()
       z.object({
         name: z.string().optional(),
         count: z.number().optional(),
-        lastUserId: z.string().optional(),
+        lastUserId: z.string().nullable().optional(),
+        lastMessageId: z.string().nullable().optional(),
+        settings: z
+          .object({
+            oneByOne: z.boolean().optional(),
+            resetOnFail: z.boolean().optional(),
+            talking: z.boolean().optional(),
+            noDeletion: z.boolean().optional(),
+            pinMilestones: z.boolean().optional(),
+            visibility: z.enum(["PUBLIC", "UNLISTED"]).optional(),
+          })
+          .optional(),
       })
     ),
     async (c) => {
       const { guildId, channelId } = c.req.param();
-      const { name, count, lastUserId } = c.req.valid("json");
+      const { name, count, lastUserId, lastMessageId, settings } =
+        c.req.valid("json");
 
       if (
         !(await db.query.channels.findFirst({
@@ -144,25 +190,31 @@ export const channelsRouter = new OpenAPIHono()
           name,
           count,
           lastUserId,
+          lastMessageId,
+          ...settings,
         })
         .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
 
       return c.json({ success: true }, 200);
     }
   )
-  .delete("/guilds/:guildId/channels/:channelId", async (c) => {
-    const { guildId, channelId } = c.req.param();
+  .delete(
+    "/guilds/:guildId/channels/:channelId",
+    onlyAllowInternalRequests,
+    async (c) => {
+      const { guildId, channelId } = c.req.param();
 
-    if (
-      !(await db.query.channels.findFirst({
-        where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
-      }))
-    )
-      return c.json({ error: "Channel not found" }, 404);
+      if (
+        !(await db.query.channels.findFirst({
+          where: and(eq(channels.id, channelId), eq(channels.guildId, guildId)),
+        }))
+      )
+        return c.json({ error: "Channel not found" }, 404);
 
-    await db
-      .delete(channels)
-      .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
+      await db
+        .delete(channels)
+        .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
 
-    return c.json({ success: true }, 200);
-  });
+      return c.json({ success: true }, 200);
+    }
+  );
