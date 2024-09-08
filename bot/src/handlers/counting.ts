@@ -77,6 +77,47 @@ export default (client: BotClient) => {
       json: {
         count: nextCount,
         lastUserId: message.author.id,
+        lastMessageId: message.id,
+      },
+      param: {
+        guildId: message.guild.id,
+        channelId: message.channel.id,
+      },
+    });
+  });
+
+  client.on("messageDelete", async (message) => {
+    if (message.author?.bot || !message.inGuild()) return;
+
+    const res = await api.guilds[":guildId"].channels[
+      ":channelId"
+    ].internal.$get({
+      param: {
+        guildId: message.guild.id,
+        channelId: message.channel.id,
+      },
+    });
+    if (res.status === 404) return;
+
+    const channel = await res.json();
+
+    if (
+      !channel.settings.noDeletion ||
+      !channel.lastMessageId ||
+      channel.lastMessageId !== message.id
+    )
+      return;
+
+    const messageSplit = message.content.split(/[ :\n]+/);
+    const messageNumberString = messageSplit[0].split(",").join("");
+
+    const newMessage = await message.channel.send({
+      content: `${message.author}: ${messageNumberString}`,
+    });
+
+    await api.guilds[":guildId"].channels[":channelId"].$patch({
+      json: {
+        lastMessageId: newMessage.id,
       },
       param: {
         guildId: message.guild.id,

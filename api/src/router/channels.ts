@@ -101,6 +101,7 @@ export const channelsRouter = new OpenAPIHono()
         name: channel.name,
         count: channel.count ?? 0,
         lastUserId: channel.lastUserId,
+        lastMessageId: channel.lastMessageId,
         guild: {
           id: channel.guild.id,
           name: channel.guild.name,
@@ -109,6 +110,7 @@ export const channelsRouter = new OpenAPIHono()
           oneByOne: channel.oneByOne,
           talking: channel.talking,
           resetOnFail: channel.resetOnFail,
+          noDeletion: channel.noDeletion,
         },
       });
     }
@@ -124,6 +126,7 @@ export const channelsRouter = new OpenAPIHono()
         name: z.string(),
         count: z.number().default(0),
         lastUserId: z.string().nullable(),
+        lastMessageId: z.string().nullable(),
       })
     ),
     async (c) => {
@@ -155,18 +158,21 @@ export const channelsRouter = new OpenAPIHono()
         name: z.string().optional(),
         count: z.number().optional(),
         lastUserId: z.string().nullable().optional(),
+        lastMessageId: z.string().nullable().optional(),
         settings: z
           .object({
             oneByOne: z.boolean().optional(),
             resetOnFail: z.boolean().optional(),
             talking: z.boolean().optional(),
+            noDeletion: z.boolean().optional(),
           })
           .optional(),
       })
     ),
     async (c) => {
       const { guildId, channelId } = c.req.param();
-      const { name, count, lastUserId, settings } = c.req.valid("json");
+      const { name, count, lastUserId, lastMessageId, settings } =
+        c.req.valid("json");
 
       if (
         !(await db.query.channels.findFirst({
@@ -181,9 +187,8 @@ export const channelsRouter = new OpenAPIHono()
           name,
           count,
           lastUserId,
-          oneByOne: settings?.oneByOne,
-          talking: settings?.talking,
-          resetOnFail: settings?.resetOnFail,
+          lastMessageId,
+          ...settings,
         })
         .where(and(eq(channels.id, channelId), eq(channels.guildId, guildId)));
 
