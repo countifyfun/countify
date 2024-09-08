@@ -3,12 +3,16 @@ import type { Command } from "../../structures/command";
 import { api } from "../../utils/api";
 
 export default {
-  description: "Update a counting channel's current count",
+  description: "Update the visibility of a counting channel.",
   options: [
     {
-      type: ApplicationCommandOptionType.Integer,
-      name: "count",
-      description: "The new count for the counting channel",
+      type: ApplicationCommandOptionType.String,
+      name: "visibility",
+      description: "The visibility of this counting channel",
+      choices: [
+        { name: "Public", value: "PUBLIC" },
+        { name: "Unlisted", value: "UNLISTED" },
+      ],
       required: true,
     },
     {
@@ -22,7 +26,6 @@ export default {
   run: async ({ interaction }) => {
     await interaction.deferReply({ ephemeral: true });
 
-    const count = interaction.options.getInteger("count", true);
     const channel =
       interaction.options.getChannel("channel") ?? interaction.channel!;
 
@@ -40,9 +43,15 @@ export default {
         `${channel} has not been set as a counting channel.`
       );
 
+    const visibility = interaction.options.getString("visibility", true) as
+      | "PUBLIC"
+      | "UNLISTED";
+
     await api.guilds[":guildId"].channels[":channelId"].$patch({
       json: {
-        count,
+        settings: {
+          visibility,
+        },
       },
       param: {
         guildId: interaction.guild.id,
@@ -51,7 +60,7 @@ export default {
     });
 
     return interaction.followUp(
-      `${channel}'s count has been updated to ${count.toLocaleString()}.`
+      `${channel} is now set to ${visibility.toLowerCase()}.`
     );
   },
 } satisfies Command;

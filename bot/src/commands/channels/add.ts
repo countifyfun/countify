@@ -35,6 +35,7 @@ export default {
     ) as TextChannel;
     let count = interaction.options.getNumber("count");
     let lastUserId = null;
+    let lastMessageId = null;
     if (!count) {
       const lastMessage = (await channel.messages.fetch({ limit: 1 })).first();
       if (lastMessage) {
@@ -43,6 +44,7 @@ export default {
         if (isNumber(messageNumberString)) {
           count = parseInt(messageNumberString, 10);
           lastUserId = lastMessage.author.id;
+          lastMessageId = lastMessage.id;
         }
       }
     }
@@ -55,6 +57,7 @@ export default {
         name: channel.name,
         count,
         lastUserId,
+        lastMessageId,
       },
       param: {
         guildId: interaction.guild.id,
@@ -79,6 +82,7 @@ export default {
           name: channel.name,
           count,
           lastUserId,
+          lastMessageId,
         },
         param: {
           guildId: interaction.guild.id,
