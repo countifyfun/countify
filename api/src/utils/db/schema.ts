@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { boolean, integer, pgTable, text } from "drizzle-orm/pg-core";
+import { boolean, integer, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 
 export const guilds = pgTable("guilds", {
   id: text("id").primaryKey(),
@@ -10,6 +10,8 @@ export const guilds = pgTable("guilds", {
 export const guildRelations = relations(guilds, ({ many }) => ({
   channels: many(channels),
 }));
+
+export const visibility = pgEnum("visibility", ["PUBLIC", "UNLISTED"]);
 
 export const channels = pgTable("channels", {
   id: text("id").primaryKey(),
@@ -24,6 +26,7 @@ export const channels = pgTable("channels", {
   talking: boolean("talking").notNull().default(true),
   noDeletion: boolean("no_deletion").notNull().default(true),
   pinMilestones: boolean("pin_milestones").notNull().default(false),
+  visibility: visibility("visibility").notNull().default("PUBLIC"),
 });
 
 export const channelRelations = relations(channels, ({ one }) => ({

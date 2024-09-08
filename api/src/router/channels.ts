@@ -167,6 +167,7 @@ export const channelsRouter = new OpenAPIHono()
             talking: z.boolean().optional(),
             noDeletion: z.boolean().optional(),
             pinMilestones: z.boolean().optional(),
+            visibility: z.enum(["PUBLIC", "UNLISTED"]).optional(),
           })
           .optional(),
       })
